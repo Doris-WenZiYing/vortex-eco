@@ -1,6 +1,6 @@
 <?php
 /**
- * VORTEX-ECO Theme Customizer
+ * VORTEX-ECO Theme Customizer - Enhanced Version
  *
  * @package VortexEco
  */
@@ -32,11 +32,11 @@ function vortexeco_customize_register($wp_customize) {
         );
     }
 
-    // ===== HERO SECTION =====
-    $wp_customize->add_section('vortexeco_hero_section', array(
-        'title'       => __('Hero Section', 'vortex-eco'),
-        'description' => __('Customize your homepage hero section', 'vortex-eco'),
-        'priority'    => 30,
+    // ===== BACKGROUND IMAGES SECTION =====
+    $wp_customize->add_section('vortexeco_background_images', array(
+        'title'       => __('Background Images', 'vortex-eco'),
+        'description' => __('Upload and manage background images for different sections of your website', 'vortex-eco'),
+        'priority'    => 25,
     ));
 
     // Hero Background Image
@@ -46,11 +46,155 @@ function vortexeco_customize_register($wp_customize) {
         'transport'         => 'refresh',
     ));
     $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'hero_background_image', array(
-        'label'       => __('Hero Background Image', 'vortex-eco'),
-        'description' => __('Upload a background image for the hero section (recommended: 1920x1080px)', 'vortex-eco'),
-        'section'     => 'vortexeco_hero_section',
+        'label'       => __('Hero Section Background', 'vortex-eco'),
+        'description' => __('Background image for the homepage hero section (recommended: 1920x1080px)', 'vortex-eco'),
+        'section'     => 'vortexeco_background_images',
         'settings'    => 'hero_background_image',
     )));
+
+    // About Section Background
+    $wp_customize->add_setting('about_background_image', array(
+        'default'           => '',
+        'sanitize_callback' => 'esc_url_raw',
+        'transport'         => 'refresh',
+    ));
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'about_background_image', array(
+        'label'       => __('About Section Background', 'vortex-eco'),
+        'description' => __('Background image for the about section (recommended: 1920x1080px)', 'vortex-eco'),
+        'section'     => 'vortexeco_background_images',
+        'settings'    => 'about_background_image',
+    )));
+
+    // Services Section Background
+    $wp_customize->add_setting('services_background_image', array(
+        'default'           => '',
+        'sanitize_callback' => 'esc_url_raw',
+        'transport'         => 'refresh',
+    ));
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'services_background_image', array(
+        'label'       => __('Services Section Background', 'vortex-eco'),
+        'description' => __('Background image for the services section (recommended: 1920x1080px)', 'vortex-eco'),
+        'section'     => 'vortexeco_background_images',
+        'settings'    => 'services_background_image',
+    )));
+
+    // Values Section Background
+    $wp_customize->add_setting('values_background_image', array(
+        'default'           => '',
+        'sanitize_callback' => 'esc_url_raw',
+        'transport'         => 'refresh',
+    ));
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'values_background_image', array(
+        'label'       => __('Values Section Background', 'vortex-eco'),
+        'description' => __('Background image for the values section (recommended: 1920x1080px)', 'vortex-eco'),
+        'section'     => 'vortexeco_background_images',
+        'settings'    => 'values_background_image',
+    )));
+
+    // Stats Section Background
+    $wp_customize->add_setting('stats_background_image', array(
+        'default'           => '',
+        'sanitize_callback' => 'esc_url_raw',
+        'transport'         => 'refresh',
+    ));
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'stats_background_image', array(
+        'label'       => __('Stats Section Background', 'vortex-eco'),
+        'description' => __('Background image for the statistics section (recommended: 1920x1080px)', 'vortex-eco'),
+        'section'     => 'vortexeco_background_images',
+        'settings'    => 'stats_background_image',
+    )));
+
+    // CTA Section Background
+    $wp_customize->add_setting('cta_background_image', array(
+        'default'           => '',
+        'sanitize_callback' => 'esc_url_raw',
+        'transport'         => 'refresh',
+    ));
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'cta_background_image', array(
+        'label'       => __('Call-to-Action Background', 'vortex-eco'),
+        'description' => __('Background image for the CTA section (recommended: 1920x1080px)', 'vortex-eco'),
+        'section'     => 'vortexeco_background_images',
+        'settings'    => 'cta_background_image',
+    )));
+
+    // Contact Section Background
+    $wp_customize->add_setting('contact_background_image', array(
+        'default'           => '',
+        'sanitize_callback' => 'esc_url_raw',
+        'transport'         => 'refresh',
+    ));
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'contact_background_image', array(
+        'label'       => __('Contact Section Background', 'vortex-eco'),
+        'description' => __('Background image for the contact section (recommended: 1920x1080px)', 'vortex-eco'),
+        'section'     => 'vortexeco_background_images',
+        'settings'    => 'contact_background_image',
+    )));
+
+    // ===== PAGE-SPECIFIC BACKGROUNDS =====
+    $wp_customize->add_section('vortexeco_page_backgrounds', array(
+        'title'       => __('Page-Specific Backgrounds', 'vortex-eco'),
+        'description' => __('Background images for specific pages', 'vortex-eco'),
+        'priority'    => 26,
+    ));
+
+    // Services Page Hero
+    $wp_customize->add_setting('services_hero_bg', array(
+        'default'           => '',
+        'sanitize_callback' => 'esc_url_raw',
+        'transport'         => 'refresh',
+    ));
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'services_hero_bg', array(
+        'label'       => __('Services Page Hero Background', 'vortex-eco'),
+        'description' => __('Background image for the services page hero section', 'vortex-eco'),
+        'section'     => 'vortexeco_page_backgrounds',
+        'settings'    => 'services_hero_bg',
+    )));
+
+    // Projects Page Hero
+    $wp_customize->add_setting('projects_hero_bg', array(
+        'default'           => '',
+        'sanitize_callback' => 'esc_url_raw',
+        'transport'         => 'refresh',
+    ));
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'projects_hero_bg', array(
+        'label'       => __('Projects Page Hero Background', 'vortex-eco'),
+        'description' => __('Background image for the projects page hero section', 'vortex-eco'),
+        'section'     => 'vortexeco_page_backgrounds',
+        'settings'    => 'projects_hero_bg',
+    )));
+
+    // About Page Hero
+    $wp_customize->add_setting('about_hero_bg', array(
+        'default'           => '',
+        'sanitize_callback' => 'esc_url_raw',
+        'transport'         => 'refresh',
+    ));
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'about_hero_bg', array(
+        'label'       => __('About Page Hero Background', 'vortex-eco'),
+        'description' => __('Background image for the about page hero section', 'vortex-eco'),
+        'section'     => 'vortexeco_page_backgrounds',
+        'settings'    => 'about_hero_bg',
+    )));
+
+    // Contact Page Hero
+    $wp_customize->add_setting('contact_hero_bg', array(
+        'default'           => '',
+        'sanitize_callback' => 'esc_url_raw',
+        'transport'         => 'refresh',
+    ));
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'contact_hero_bg', array(
+        'label'       => __('Contact Page Hero Background', 'vortex-eco'),
+        'description' => __('Background image for the contact page hero section', 'vortex-eco'),
+        'section'     => 'vortexeco_page_backgrounds',
+        'settings'    => 'contact_hero_bg',
+    )));
+
+    // ===== HERO SECTION =====
+    $wp_customize->add_section('vortexeco_hero_section', array(
+        'title'       => __('Hero Section', 'vortex-eco'),
+        'description' => __('Customize your homepage hero section', 'vortex-eco'),
+        'priority'    => 30,
+    ));
 
     // Hero Overlay Opacity
     $wp_customize->add_setting('hero_overlay_opacity', array(
@@ -445,6 +589,62 @@ function vortexeco_customize_register($wp_customize) {
             'type'    => 'url',
         ));
     }
+
+    // ===== COMPANY INFORMATION =====
+    $wp_customize->add_section('vortexeco_company_info', array(
+        'title'       => __('Company Information', 'vortex-eco'),
+        'description' => __('Update your company contact details', 'vortex-eco'),
+        'priority'    => 46,
+    ));
+
+    // Company Phone
+    $wp_customize->add_setting('company_phone', array(
+        'default'           => '+1 (555) 123-4567',
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport'         => 'postMessage',
+    ));
+    $wp_customize->add_control('company_phone', array(
+        'label'   => __('Company Phone Number', 'vortex-eco'),
+        'section' => 'vortexeco_company_info',
+        'type'    => 'text',
+    ));
+
+    // Company Email
+    $wp_customize->add_setting('company_email', array(
+        'default'           => 'info@vortexeco.com',
+        'sanitize_callback' => 'sanitize_email',
+        'transport'         => 'postMessage',
+    ));
+    $wp_customize->add_control('company_email', array(
+        'label'   => __('Company Email Address', 'vortex-eco'),
+        'section' => 'vortexeco_company_info',
+        'type'    => 'email',
+    ));
+
+    // Company Address
+    $wp_customize->add_setting('company_address', array(
+        'default'           => "123 Wind Energy Plaza\nRenewable City, RC 12345\nTaiwan",
+        'sanitize_callback' => 'sanitize_textarea_field',
+        'transport'         => 'postMessage',
+    ));
+    $wp_customize->add_control('company_address', array(
+        'label'   => __('Company Address', 'vortex-eco'),
+        'section' => 'vortexeco_company_info',
+        'type'    => 'textarea',
+    ));
+
+    // Emergency Phone
+    $wp_customize->add_setting('emergency_phone', array(
+        'default'           => '+1 (555) 911-WIND',
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport'         => 'postMessage',
+    ));
+    $wp_customize->add_control('emergency_phone', array(
+        'label'       => __('Emergency Contact Number', 'vortex-eco'),
+        'description' => __('24/7 emergency support line', 'vortex-eco'),
+        'section'     => 'vortexeco_company_info',
+        'type'        => 'text',
+    ));
 }
 add_action('customize_register', 'vortexeco_customize_register');
 
@@ -475,6 +675,69 @@ function vortexeco_customize_preview_js() {
 add_action('customize_preview_init', 'vortexeco_customize_preview_js');
 
 /**
+ * Enhanced custom CSS generation
+ */
+function vortexeco_get_enhanced_custom_css() {
+    $primary_color = get_theme_mod('primary_color', '#1263A0');
+    $secondary_color = get_theme_mod('secondary_color', '#0B4D7D');
+    $accent_color = get_theme_mod('accent_color', '#00A8E6');
+    
+    $container_width = get_theme_mod('container_width', 1200);
+    $header_height = get_theme_mod('header_height', 80);
+    $base_font_size = get_theme_mod('base_font_size', 16);
+    
+    // Color calculations for RGB values
+    $primary_rgb = vortexeco_hex_to_rgb($primary_color);
+    $accent_rgb = vortexeco_hex_to_rgb($accent_color);
+    
+    $css = ":root {
+        --primary-color: {$primary_color};
+        --secondary-color: {$secondary_color};
+        --accent-color: {$accent_color};
+        --primary-color-rgb: {$primary_rgb};
+        --accent-color-rgb: {$accent_rgb};
+        --gradient-primary: linear-gradient(135deg, {$primary_color} 0%, {$secondary_color} 100%);
+        --gradient-accent: linear-gradient(135deg, {$accent_color} 0%, {$primary_color} 100%);
+        --gradient-overlay: linear-gradient(rgba{$primary_rgb}, 0.9), rgba({$secondary_color}, 0.9));
+        --container-width: {$container_width}px;
+        --header-height: {$header_height}px;
+    }
+    
+    html {
+        font-size: {$base_font_size}px;
+    }";
+    
+    // Font family
+    $font_family = get_theme_mod('font_family', 'inter');
+    if ($font_family !== 'inter') {
+        $font_map = array(
+            'roboto' => "'Roboto', sans-serif",
+            'opensans' => "'Open Sans', sans-serif",
+            'lato' => "'Lato', sans-serif",
+            'poppins' => "'Poppins', sans-serif",
+            'system' => "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+        );
+        
+        if (isset($font_map[$font_family])) {
+            $css .= "
+            :root {
+                --font-primary: {$font_map[$font_family]};
+            }
+            body, .btn, input, textarea, select {
+                font-family: {$font_map[$font_family]};
+            }";
+        }
+    }
+    
+    return $css;
+}
+
+/**
+ * Helper function to convert hex to RGB
+ */
+
+
+/**
  * Sanitization functions
  */
 function vortexeco_sanitize_select($input, $setting) {
@@ -490,4 +753,15 @@ function vortexeco_sanitize_float($input) {
 function vortexeco_sanitize_checkbox($checked) {
     return ((isset($checked) && true === $checked) ? true : false);
 }
+
+/**
+ * Add Customizer CSS to head
+ */
+function vortexeco_customizer_css() {
+    $custom_css = vortexeco_get_enhanced_custom_css();
+    if ($custom_css) {
+        echo "<style type='text/css'>\n" . $custom_css . "\n</style>\n";
+    }
+}
+add_action('wp_head', 'vortexeco_customizer_css');
 ?>

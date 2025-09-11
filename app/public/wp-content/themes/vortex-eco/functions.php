@@ -37,6 +37,9 @@ function vortexeco_setup() {
     add_image_size('vortex-hero', 1920, 1080, true);
     add_image_size('vortex-service', 400, 300, true);
     add_image_size('vortex-blog', 600, 400, true);
+    add_image_size('vortex-background', 1920, 1080, true);
+    add_image_size('vortex-featured', 800, 600, true);
+    add_image_size('vortex-thumbnail', 400, 300, true);
     
     // Register navigation menus
     register_nav_menus(array(
@@ -159,17 +162,34 @@ function vortexeco_widgets_init() {
 add_action('widgets_init', 'vortexeco_widgets_init');
 
 /**
+ * Enqueue Google Fonts dynamically based on font selection
+ */
+function vortexeco_google_fonts() {
+    $font_family = get_theme_mod('font_family', 'inter');
+    
+    $google_fonts = array(
+        'inter' => 'Inter:300,400,500,600,700,800',
+        'roboto' => 'Roboto:300,400,500,700',
+        'opensans' => 'Open+Sans:300,400,600,700',
+        'lato' => 'Lato:300,400,700',
+        'poppins' => 'Poppins:300,400,500,600,700'
+    );
+    
+    if (isset($google_fonts[$font_family])) {
+        wp_enqueue_style(
+            'vortexeco-google-font',
+            'https://fonts.googleapis.com/css2?family=' . $google_fonts[$font_family] . '&display=swap',
+            array(),
+            null
+        );
+    }
+}
+add_action('wp_enqueue_scripts', 'vortexeco_google_fonts', 5);
+
+/**
  * Enqueue scripts and styles
  */
 function vortexeco_scripts() {
-    // Enqueue Google Fonts
-    wp_enqueue_style(
-        'vortexeco-google-fonts',
-        'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap',
-        array(),
-        null
-    );
-    
     // Main stylesheet
     wp_enqueue_style(
         'vortexeco-style',
@@ -264,35 +284,329 @@ require get_template_directory() . '/inc/template-functions.php';
 require get_template_directory() . '/inc/custom-header.php';
 
 /**
- * Generate custom CSS from customizer options
+ * Generate enhanced custom CSS from customizer options
  */
 function vortexeco_get_custom_css() {
     $primary_color = get_theme_mod('primary_color', '#1263A0');
     $secondary_color = get_theme_mod('secondary_color', '#0B4D7D');
     $accent_color = get_theme_mod('accent_color', '#00A8E6');
     
-    $hero_bg_image = get_theme_mod('hero_background_image');
-    $hero_overlay_opacity = get_theme_mod('hero_overlay_opacity', 0.9);
+    $container_width = get_theme_mod('container_width', 1200);
+    $header_height = get_theme_mod('header_height', 80);
+    $base_font_size = get_theme_mod('base_font_size', 16);
+    
+    // Color calculations for RGB values
+    $primary_rgb = vortexeco_hex_to_rgb($primary_color);
+    $secondary_rgb = vortexeco_hex_to_rgb($secondary_color);
+    $accent_rgb = vortexeco_hex_to_rgb($accent_color);
     
     $css = ":root {
         --primary-color: {$primary_color};
         --secondary-color: {$secondary_color};
         --accent-color: {$accent_color};
+        --primary-color-rgb: {$primary_rgb};
+        --secondary-color-rgb: {$secondary_rgb};
+        --accent-color-rgb: {$accent_rgb};
         --gradient-primary: linear-gradient(135deg, {$primary_color} 0%, {$secondary_color} 100%);
         --gradient-accent: linear-gradient(135deg, {$accent_color} 0%, {$primary_color} 100%);
+        --gradient-overlay: linear-gradient(rgba({$primary_rgb}, 0.9), rgba({$secondary_rgb}, 0.9));
+        --container-width: {$container_width}px;
+        --header-height: {$header_height}px;
+    }
+    
+    html {
+        font-size: {$base_font_size}px;
     }";
     
-    if ($hero_bg_image) {
-        $css .= ".hero-section {
-            background-image: linear-gradient(rgba(18, 99, 160, {$hero_overlay_opacity}), rgba(11, 77, 125, {$hero_overlay_opacity})), url({$hero_bg_image});
-            background-attachment: fixed;
-            background-size: cover;
-            background-position: center;
-        }";
+    // Background images for different sections
+    $background_images = array(
+        'hero_background_image' => '.hero-section',
+        'about_background_image' => '.about-section',
+        'services_background_image' => '.services-section',
+        'values_background_image' => '.values-section',
+        'stats_background_image' => '.stats-section',
+        'cta_background_image' => '.cta-section',
+        'contact_background_image' => '.contact-section'
+    );
+    
+    foreach ($background_images as $setting => $selector) {
+        $image_url = get_theme_mod($setting);
+        if ($image_url) {
+            $overlay_opacity = get_theme_mod('hero_overlay_opacity', 0.9);
+            $css .= "{$selector} {
+                background-image: 
+                    linear-gradient(rgba({$primary_rgb}, {$overlay_opacity}), rgba({$secondary_rgb}, {$overlay_opacity})),
+                    url({$image_url});
+                background-attachment: fixed;
+                background-size: cover;
+                background-position: center;
+            }";
+        }
+    }
+    
+    // Font family
+    $font_family = get_theme_mod('font_family', 'inter');
+    if ($font_family !== 'inter') {
+        $font_map = array(
+            'roboto' => "'Roboto', sans-serif",
+            'opensans' => "'Open Sans', sans-serif",
+            'lato' => "'Lato', sans-serif",
+            'poppins' => "'Poppins', sans-serif",
+            'system' => "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+        );
+        
+        if (isset($font_map[$font_family])) {
+            $css .= "
+            :root {
+                --font-primary: {$font_map[$font_family]};
+            }
+            body, .btn, input, textarea, select {
+                font-family: {$font_map[$font_family]};
+            }";
+        }
     }
     
     return $css;
 }
+
+/**
+ * Helper function to convert hex to RGB
+ */
+function vortexeco_hex_to_rgb($hex) {
+    $hex = str_replace('#', '', $hex);
+    $r = hexdec(substr($hex, 0, 2));
+    $g = hexdec(substr($hex, 2, 2));
+    $b = hexdec(substr($hex, 4, 2));
+    return "$r, $g, $b";
+}
+
+/**
+ * Media Library Enhancements
+ */
+function vortexeco_enhance_media_library() {
+    // Add custom image sizes for different sections
+    add_image_size('vortex-background', 1920, 1080, true);
+    add_image_size('vortex-featured', 800, 600, true);
+    add_image_size('vortex-thumbnail', 400, 300, true);
+}
+add_action('after_setup_theme', 'vortexeco_enhance_media_library');
+
+/**
+ * Add custom fields to media library for background images
+ */
+function vortexeco_media_fields($form_fields, $post) {
+    $form_fields['vortex_usage'] = array(
+        'label' => __('Recommended Usage', 'vortex-eco'),
+        'input' => 'html',
+        'html' => '<select name="attachments[' . $post->ID . '][vortex_usage]">
+            <option value="">' . __('Select usage type', 'vortex-eco') . '</option>
+            <option value="hero">' . __('Hero Section Background', 'vortex-eco') . '</option>
+            <option value="about">' . __('About Section Background', 'vortex-eco') . '</option>
+            <option value="services">' . __('Services Section Background', 'vortex-eco') . '</option>
+            <option value="values">' . __('Values Section Background', 'vortex-eco') . '</option>
+            <option value="cta">' . __('Call-to-Action Background', 'vortex-eco') . '</option>
+            <option value="page-hero">' . __('Page Hero Background', 'vortex-eco') . '</option>
+        </select>',
+        'value' => get_post_meta($post->ID, 'vortex_usage', true),
+    );
+    
+    return $form_fields;
+}
+add_filter('attachment_fields_to_edit', 'vortexeco_media_fields', 10, 2);
+
+/**
+ * Save custom media fields
+ */
+function vortexeco_save_media_fields($post, $attachment) {
+    if (isset($attachment['vortex_usage'])) {
+        update_post_meta($post['ID'], 'vortex_usage', $attachment['vortex_usage']);
+    }
+    return $post;
+}
+add_filter('attachment_fields_to_save', 'vortexeco_save_media_fields', 10, 2);
+
+/**
+ * Add media library filter for background images
+ */
+function vortexeco_media_library_filter() {
+    $screen = get_current_screen();
+    if ($screen && $screen->id === 'upload') {
+        $current_usage = isset($_GET['vortex_usage']) ? $_GET['vortex_usage'] : '';
+        ?>
+        <select name="vortex_usage" id="filter-by-usage">
+            <option value=""><?php _e('All usage types', 'vortex-eco'); ?></option>
+            <option value="hero" <?php selected($current_usage, 'hero'); ?>><?php _e('Hero Backgrounds', 'vortex-eco'); ?></option>
+            <option value="about" <?php selected($current_usage, 'about'); ?>><?php _e('About Backgrounds', 'vortex-eco'); ?></option>
+            <option value="services" <?php selected($current_usage, 'services'); ?>><?php _e('Services Backgrounds', 'vortex-eco'); ?></option>
+            <option value="values" <?php selected($current_usage, 'values'); ?>><?php _e('Values Backgrounds', 'vortex-eco'); ?></option>
+            <option value="cta" <?php selected($current_usage, 'cta'); ?>><?php _e('CTA Backgrounds', 'vortex-eco'); ?></option>
+            <option value="page-hero" <?php selected($current_usage, 'page-hero'); ?>><?php _e('Page Hero Backgrounds', 'vortex-eco'); ?></option>
+        </select>
+        <?php
+    }
+}
+add_action('restrict_manage_posts', 'vortexeco_media_library_filter');
+
+/**
+ * Filter media library by usage type
+ */
+function vortexeco_filter_media_by_usage($query) {
+    global $pagenow;
+    if ($pagenow === 'upload.php' && isset($_GET['vortex_usage']) && $_GET['vortex_usage'] !== '') {
+        $query->set('meta_key', 'vortex_usage');
+        $query->set('meta_value', $_GET['vortex_usage']);
+    }
+}
+add_action('parse_query', 'vortexeco_filter_media_by_usage');
+
+/**
+ * Enhanced reading time calculation
+ */
+function vortexeco_enhanced_reading_time($post_id = null) {
+    if (!$post_id) {
+        global $post;
+        $post_id = $post->ID;
+    }
+    
+    $content = get_post_field('post_content', $post_id);
+    $word_count = str_word_count(strip_tags($content));
+    $reading_time = ceil($word_count / 200); // 200 words per minute
+    
+    return array(
+        'minutes' => $reading_time,
+        'words' => $word_count,
+        'formatted' => sprintf(
+            _n('%d min read', '%d min read', $reading_time, 'vortex-eco'),
+            $reading_time
+        )
+    );
+}
+
+/**
+ * Add meta box for featured posts
+ */
+function vortexeco_add_featured_post_meta_box() {
+    add_meta_box(
+        'vortexeco_featured_post',
+        __('Featured Post Settings', 'vortex-eco'),
+        'vortexeco_featured_post_meta_box_callback',
+        'post',
+        'side',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'vortexeco_add_featured_post_meta_box');
+
+/**
+ * Featured post meta box callback
+ */
+function vortexeco_featured_post_meta_box_callback($post) {
+    wp_nonce_field('vortexeco_featured_post_nonce', 'vortexeco_featured_post_nonce_field');
+    $featured = get_post_meta($post->ID, 'featured_post', true);
+    ?>
+    <label>
+        <input type="checkbox" name="featured_post" value="yes" <?php checked($featured, 'yes'); ?>>
+        <?php _e('Feature this post on the homepage and news page', 'vortex-eco'); ?>
+    </label>
+    <?php
+}
+
+/**
+ * Save featured post meta
+ */
+function vortexeco_save_featured_post_meta($post_id) {
+    if (!isset($_POST['vortexeco_featured_post_nonce_field']) || 
+        !wp_verify_nonce($_POST['vortexeco_featured_post_nonce_field'], 'vortexeco_featured_post_nonce')) {
+        return;
+    }
+
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+
+    $featured = isset($_POST['featured_post']) ? 'yes' : 'no';
+    update_post_meta($post_id, 'featured_post', $featured);
+}
+add_action('save_post', 'vortexeco_save_featured_post_meta');
+
+/**
+ * Admin dashboard widget for theme info
+ */
+function vortexeco_dashboard_widget() {
+    wp_add_dashboard_widget(
+        'vortexeco_theme_info',
+        __('VORTEX-ECO Theme Information', 'vortex-eco'),
+        'vortexeco_dashboard_widget_content'
+    );
+}
+add_action('wp_dashboard_setup', 'vortexeco_dashboard_widget');
+
+/**
+ * Dashboard widget content
+ */
+function vortexeco_dashboard_widget_content() {
+    ?>
+    <div style="display: flex; gap: 1rem;">
+        <div style="flex: 1;">
+            <h4><?php _e('Quick Actions', 'vortex-eco'); ?></h4>
+            <p><a href="<?php echo admin_url('customize.php'); ?>"><?php _e('Customize Theme', 'vortex-eco'); ?></a></p>
+            <p><a href="<?php echo admin_url('upload.php'); ?>"><?php _e('Manage Background Images', 'vortex-eco'); ?></a></p>
+            <p><a href="<?php echo admin_url('nav-menus.php'); ?>"><?php _e('Setup Menus', 'vortex-eco'); ?></a></p>
+        </div>
+        <div style="flex: 1;">
+            <h4><?php _e('Theme Statistics', 'vortex-eco'); ?></h4>
+            <?php
+            $post_count = wp_count_posts();
+            $featured_count = get_posts(array(
+                'meta_key' => 'featured_post',
+                'meta_value' => 'yes',
+                'numberposts' => -1,
+                'fields' => 'ids'
+            ));
+            ?>
+            <p><?php printf(__('Total Posts: %d', 'vortex-eco'), $post_count->publish); ?></p>
+            <p><?php printf(__('Featured Posts: %d', 'vortex-eco'), count($featured_count)); ?></p>
+        </div>
+    </div>
+    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #ddd;">
+        <small><?php printf(__('VORTEX-ECO Theme v%s', 'vortex-eco'), VORTEXECO_VERSION); ?></small>
+    </div>
+    <?php
+}
+
+/**
+ * Add theme support for post formats
+ */
+function vortexeco_post_formats() {
+    add_theme_support('post-formats', array(
+        'gallery',
+        'video',
+        'quote',
+        'link'
+    ));
+}
+add_action('after_setup_theme', 'vortexeco_post_formats');
+
+/**
+ * Custom excerpt for different post formats
+ */
+function vortexeco_custom_excerpt($excerpt) {
+    global $post;
+    
+    if (has_post_format('quote')) {
+        $quote = get_post_meta($post->ID, 'quote_text', true);
+        if ($quote) {
+            return '<blockquote>' . $quote . '</blockquote>';
+        }
+    }
+    
+    return $excerpt;
+}
+add_filter('get_the_excerpt', 'vortexeco_custom_excerpt');
 
 /**
  * Custom excerpt length
@@ -603,16 +917,67 @@ function vortexeco_register_post_types() {
 // add_action('init', 'vortexeco_register_post_types');
 
 /**
- * Theme activation hook
+ * Theme activation hook with enhanced setup
  */
 function vortexeco_after_theme_activation() {
     // Set default customizer values
-    set_theme_mod('primary_color', '#1263A0');
-    set_theme_mod('secondary_color', '#0B4D7D');
-    set_theme_mod('accent_color', '#00A8E6');
+    $defaults = array(
+        'primary_color' => '#1263A0',
+        'secondary_color' => '#0B4D7D',
+        'accent_color' => '#00A8E6',
+        'font_family' => 'inter',
+        'container_width' => 1200,
+        'header_height' => 80,
+        'base_font_size' => 16,
+        'hero_overlay_opacity' => 0.9,
+        'show_back_to_top' => true,
+        'sticky_header' => true,
+        'blog_layout' => 'grid',
+        'show_author_meta' => true,
+        'show_date_meta' => true
+    );
+    
+    foreach ($defaults as $setting => $value) {
+        if (get_theme_mod($setting) === false) {
+            set_theme_mod($setting, $value);
+        }
+    }
+    
+    // Create default pages if they don't exist
+    $default_pages = array(
+        'Services' => 'Our comprehensive wind energy consulting services',
+        'Projects' => 'Our portfolio of successful wind energy projects',
+        'About Us' => 'Learn about our wind energy consulting expertise',
+        'Contact' => 'Get in touch with our wind energy experts',
+        'News & Insights' => 'Latest wind energy news and industry insights'
+    );
+    
+    foreach ($default_pages as $title => $content) {
+        $page = get_page_by_title($title);
+        if (!$page) {
+            $page_data = array(
+                'post_title' => $title,
+                'post_content' => $content,
+                'post_status' => 'draft',
+                'post_type' => 'page'
+            );
+            wp_insert_post($page_data);
+        }
+    }
     
     // Flush rewrite rules
     flush_rewrite_rules();
+    
+    // Set default menu locations
+    $locations = get_theme_mod('nav_menu_locations');
+    if (empty($locations)) {
+        $menu = wp_get_nav_menu_object('Main Menu');
+        if (!$menu) {
+            $menu_id = wp_create_nav_menu('Main Menu');
+            $locations = array('primary' => $menu_id);
+            set_theme_mod('nav_menu_locations', $locations);
+        }
+    }
 }
 add_action('after_switch_theme', 'vortexeco_after_theme_activation');
 ?>

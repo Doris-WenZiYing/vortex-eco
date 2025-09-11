@@ -1,14 +1,21 @@
 <?php
 /**
- * The front page template file
+ * The front page template file with enhanced background image support
  *
  * @package VortexEco
  */
 
 get_header(); ?>
 
-<!-- Hero Section -->
-<section id="hero" class="hero-section">
+<!-- Hero Section with Dynamic Background -->
+<section id="hero" class="hero-section" style="
+    background-image: 
+        var(--gradient-overlay),
+        url('<?php echo get_theme_mod('hero_background_image', get_template_directory_uri() . '/assets/images/wind-farm-hero.jpg'); ?>');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+">
     <div class="container">
         <div class="hero-content fade-in">
             <h1 class="hero-title">
@@ -27,10 +34,28 @@ get_header(); ?>
             </div>
         </div>
     </div>
+    
+    <!-- Animated wind turbine icon -->
+    <div class="hero-decoration" style="
+        position: absolute;
+        bottom: 10%;
+        right: 5%;
+        font-size: 6rem;
+        opacity: 0.3;
+        color: white;
+        animation: rotate 10s linear infinite;
+    ">🌪️</div>
 </section>
 
-<!-- About Section -->
-<section id="about" class="section section-alt">
+<!-- About Section with Background Image -->
+<section id="about" class="section section-with-bg" style="
+    background-image: 
+        linear-gradient(rgba(248, 249, 250, 0.9), rgba(248, 249, 250, 0.9)),
+        url('<?php echo get_theme_mod('about_background_image', get_template_directory_uri() . '/assets/images/offshore-wind-bg.jpg'); ?>');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+">
     <div class="container">
         <div class="section-title">
             <h2><?php echo esc_html(get_theme_mod('about_title', 'Comprehensive Consulting Team, Focused on Every Detail')); ?></h2>
@@ -39,14 +64,28 @@ get_header(); ?>
         
         <div class="row">
             <div class="col slide-up">
-                <div style="background: var(--gradient-primary); color: white; padding: 3rem; border-radius: var(--border-radius-lg); height: 100%;">
+                <div class="content-card" style="
+                    background: linear-gradient(135deg, rgba(18, 99, 160, 0.95), rgba(11, 77, 125, 0.95));
+                    color: white; 
+                    padding: 3rem; 
+                    border-radius: var(--border-radius-lg); 
+                    height: 100%;
+                    backdrop-filter: blur(10px);
+                ">
                     <h3 style="color: white; margin-bottom: 1.5rem;">Leading Wind Energy Innovation</h3>
                     <p style="color: rgba(255,255,255,0.9); margin-bottom: 2rem;">With decades of combined experience in the wind energy sector, our team of experts provides unparalleled consulting services across all aspects of offshore wind development and operations.</p>
                     <p style="color: rgba(255,255,255,0.9);">From initial feasibility studies to long-term maintenance strategies, we ensure your projects meet the highest standards of efficiency, safety, and environmental responsibility.</p>
                 </div>
             </div>
             <div class="col slide-up">
-                <div style="background: white; padding: 3rem; border-radius: var(--border-radius-lg); box-shadow: var(--shadow-md); height: 100%;">
+                <div class="content-card" style="
+                    background: rgba(255, 255, 255, 0.95); 
+                    padding: 3rem; 
+                    border-radius: var(--border-radius-lg); 
+                    box-shadow: var(--shadow-md); 
+                    height: 100%;
+                    backdrop-filter: blur(10px);
+                ">
                     <h3 style="margin-bottom: 1.5rem; color: var(--primary-color);">Our Expertise</h3>
                     <ul style="list-style: none; padding: 0;">
                         <li style="padding: 0.5rem 0; border-bottom: 1px solid var(--bg-light); position: relative; padding-left: 2rem;">
@@ -73,7 +112,14 @@ get_header(); ?>
 </section>
 
 <!-- Services Section -->
-<section id="services" class="section">
+<section id="services" class="section" style="
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)),
+        url('<?php echo get_theme_mod('services_background_image', get_template_directory_uri() . '/assets/images/wind-turbines-bg.jpg'); ?>');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+">
     <div class="container">
         <div class="section-title">
             <h2><?php esc_html_e('Our Consulting Expertise', 'vortex-eco'); ?></h2>
@@ -82,7 +128,10 @@ get_header(); ?>
         
         <div class="services-grid">
             <!-- Service 1: Wind Energy Materials -->
-            <div class="service-card fade-in">
+            <div class="service-card fade-in" style="
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+            ">
                 <div class="service-icon">🔧</div>
                 <h3><?php esc_html_e('Wind Energy Materials Consulting', 'vortex-eco'); ?></h3>
                 <p><?php esc_html_e('Expert knowledge in structural materials, protective coatings, weather-resistant components, and construction consumables.', 'vortex-eco'); ?></p>
@@ -93,7 +142,10 @@ get_header(); ?>
             </div>
 
             <!-- Service 2: Turbine Performance -->
-            <div class="service-card fade-in">
+            <div class="service-card fade-in" style="
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+            ">
                 <div class="service-icon">⚡</div>
                 <h3><?php esc_html_e('Turbine Performance & Structural Consulting', 'vortex-eco'); ?></h3>
                 <p><?php esc_html_e('Analysis of turbine operational efficiency and reliability assessment.', 'vortex-eco'); ?></p>
@@ -104,7 +156,10 @@ get_header(); ?>
             </div>
 
             <!-- Service 3: Pre-assembly -->
-            <div class="service-card fade-in">
+            <div class="service-card fade-in" style="
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+            ">
                 <div class="service-icon">🏗️</div>
                 <h3><?php esc_html_e('Pre-assembly & Installation Consulting', 'vortex-eco'); ?></h3>
                 <p><?php esc_html_e('Planning turbine pre-assembly processes and optimized installation solutions.', 'vortex-eco'); ?></p>
@@ -115,7 +170,10 @@ get_header(); ?>
             </div>
 
             <!-- Service 4: Wind Farm Development -->
-            <div class="service-card fade-in">
+            <div class="service-card fade-in" style="
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+            ">
                 <div class="service-icon">🌊</div>
                 <h3><?php esc_html_e('Wind Farm Development Consulting', 'vortex-eco'); ?></h3>
                 <p><?php esc_html_e('Assistance with wind farm site selection, environmental assessment, and feasibility analysis.', 'vortex-eco'); ?></p>
@@ -126,7 +184,10 @@ get_header(); ?>
             </div>
 
             <!-- Service 5: Electrical Systems -->
-            <div class="service-card fade-in">
+            <div class="service-card fade-in" style="
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+            ">
                 <div class="service-icon">⚡</div>
                 <h3><?php esc_html_e('Turbine Electrical Systems Consulting', 'vortex-eco'); ?></h3>
                 <p><?php esc_html_e('Electrical system design, wiring, and grounding recommendations.', 'vortex-eco'); ?></p>
@@ -137,7 +198,10 @@ get_header(); ?>
             </div>
 
             <!-- Service 6: Operations & Maintenance -->
-            <div class="service-card fade-in">
+            <div class="service-card fade-in" style="
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+            ">
                 <div class="service-icon">🔄</div>
                 <h3><?php esc_html_e('Operations & Maintenance Consulting', 'vortex-eco'); ?></h3>
                 <p><?php esc_html_e('Developing wind farm operation and maintenance strategies.', 'vortex-eco'); ?></p>
@@ -147,7 +211,10 @@ get_header(); ?>
             </div>
 
             <!-- Service 7: Regulatory & Certification -->
-            <div class="service-card fade-in">
+            <div class="service-card fade-in" style="
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+            ">
                 <div class="service-icon">📋</div>
                 <h3><?php esc_html_e('Regulatory & Certification Consulting', 'vortex-eco'); ?></h3>
                 <p><?php esc_html_e('Assistance in obtaining international and local certifications.', 'vortex-eco'); ?></p>
@@ -157,7 +224,10 @@ get_header(); ?>
             </div>
 
             <!-- Service 8: Sustainability & ESG -->
-            <div class="service-card fade-in">
+            <div class="service-card fade-in" style="
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+            ">
                 <div class="service-icon">🌱</div>
                 <h3><?php esc_html_e('Sustainability & ESG Consulting', 'vortex-eco'); ?></h3>
                 <p><?php esc_html_e('Carbon footprint management and sustainability assessment.', 'vortex-eco'); ?></p>
@@ -169,12 +239,19 @@ get_header(); ?>
     </div>
 </section>
 
-<!-- Values Section -->
-<section id="values" class="values-section section">
+<!-- Values Section with Video Background Option -->
+<section id="values" class="values-section section" style="
+    background-image: 
+        var(--gradient-overlay),
+        url('<?php echo get_theme_mod('values_background_image', get_template_directory_uri() . '/assets/images/sunset-wind-farm.jpg'); ?>');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+">
     <div class="container">
         <div class="section-title">
-            <h2><?php echo esc_html(get_theme_mod('values_title', 'VORTEX Values')); ?></h2>
-            <p class="section-subtitle"><?php echo esc_html(get_theme_mod('values_subtitle', 'We are not just consultants, we are your long-term partners for project success.')); ?></p>
+            <h2 style="color: white;"><?php echo esc_html(get_theme_mod('values_title', 'VORTEX Values')); ?></h2>
+            <p class="section-subtitle" style="color: rgba(255,255,255,0.9);"><?php echo esc_html(get_theme_mod('values_subtitle', 'We are not just consultants, we are your long-term partners for project success.')); ?></p>
         </div>
         
         <div class="values-grid">
@@ -200,7 +277,13 @@ get_header(); ?>
 </section>
 
 <!-- Stats Section -->
-<section class="stats-section section">
+<section class="stats-section section" style="
+    background-image: 
+        linear-gradient(rgba(248, 249, 250, 0.95), rgba(248, 249, 250, 0.95)),
+        url('<?php echo get_theme_mod('stats_background_image', get_template_directory_uri() . '/assets/images/wind-energy-stats.jpg'); ?>');
+    background-size: cover;
+    background-position: center;
+">
     <div class="container">
         <div class="section-title">
             <h2><?php esc_html_e('Our Impact', 'vortex-eco'); ?></h2>
@@ -208,22 +291,34 @@ get_header(); ?>
         </div>
         
         <div class="stats-grid">
-            <div class="stat-card fade-in">
+            <div class="stat-card fade-in" style="
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+            ">
                 <span class="stat-number" data-count="50">0</span>
                 <div class="stat-label"><?php esc_html_e('Projects Completed', 'vortex-eco'); ?></div>
             </div>
             
-            <div class="stat-card fade-in">
+            <div class="stat-card fade-in" style="
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+            ">
                 <span class="stat-number" data-count="2">0</span>
                 <div class="stat-label"><?php esc_html_e('GW+ Total Capacity', 'vortex-eco'); ?></div>
             </div>
             
-            <div class="stat-card fade-in">
+            <div class="stat-card fade-in" style="
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+            ">
                 <span class="stat-number" data-count="15">0</span>
                 <div class="stat-label"><?php esc_html_e('Years Experience', 'vortex-eco'); ?></div>
             </div>
             
-            <div class="stat-card fade-in">
+            <div class="stat-card fade-in" style="
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+            ">
                 <span class="stat-number" data-count="20">0</span>
                 <div class="stat-label"><?php esc_html_e('Expert Consultants', 'vortex-eco'); ?></div>
             </div>
@@ -232,7 +327,15 @@ get_header(); ?>
 </section>
 
 <!-- Call to Action Section -->
-<section class="section" style="background: var(--gradient-primary); color: var(--text-white);">
+<section class="section" style="
+    background-image: 
+        var(--gradient-overlay),
+        url('<?php echo get_theme_mod('cta_background_image', get_template_directory_uri() . '/assets/images/wind-turbine-close.jpg'); ?>');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: var(--text-white);
+">
     <div class="container">
         <div class="section-title" style="text-align: center;">
             <h2 style="color: var(--text-white);"><?php esc_html_e('Ready to Power Your Wind Energy Project?', 'vortex-eco'); ?></h2>
@@ -252,9 +355,14 @@ get_header(); ?>
     </div>
 </section>
 
-
 <!-- Contact Section -->
-<section id="contact" class="section" style="background: var(--bg-light);">
+<section id="contact" class="section" style="
+    background-image: 
+        linear-gradient(rgba(248, 249, 250, 0.95), rgba(248, 249, 250, 0.95)),
+        url('<?php echo get_theme_mod('contact_background_image', get_template_directory_uri() . '/assets/images/office-bg.jpg'); ?>');
+    background-size: cover;
+    background-position: center;
+">
     <div class="container">
         <div class="section-title">
             <h2><?php esc_html_e('Get In Touch', 'vortex-eco'); ?></h2>
@@ -263,7 +371,13 @@ get_header(); ?>
         
         <div class="row">
             <div class="col">
-                <div style="background: white; padding: 2rem; border-radius: var(--border-radius-lg); box-shadow: var(--shadow-sm);">
+                <div style="
+                    background: rgba(255, 255, 255, 0.95); 
+                    padding: 2rem; 
+                    border-radius: var(--border-radius-lg); 
+                    box-shadow: var(--shadow-sm);
+                    backdrop-filter: blur(10px);
+                ">
                     <h3 style="margin-bottom: 1.5rem; color: var(--primary-color);"><?php esc_html_e('Contact Information', 'vortex-eco'); ?></h3>
                     
                     <div style="margin-bottom: 1.5rem;">
@@ -300,7 +414,13 @@ get_header(); ?>
             </div>
             
             <div class="col">
-                <div style="background: white; padding: 2rem; border-radius: var(--border-radius-lg); box-shadow: var(--shadow-sm);">
+                <div style="
+                    background: rgba(255, 255, 255, 0.95); 
+                    padding: 2rem; 
+                    border-radius: var(--border-radius-lg); 
+                    box-shadow: var(--shadow-sm);
+                    backdrop-filter: blur(10px);
+                ">
                     <h3 style="margin-bottom: 1.5rem; color: var(--primary-color);"><?php esc_html_e('Send Us a Message', 'vortex-eco'); ?></h3>
                     
                     <?php echo do_shortcode('[contact-form-7 id="1" title="Contact form 1"]'); ?>
@@ -320,5 +440,35 @@ get_header(); ?>
         </div>
     </div>
 </section>
+
+<style>
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.content-card {
+    transition: var(--transition);
+}
+
+.content-card:hover {
+    transform: translateY(-5px);
+}
+
+.section-with-bg {
+    position: relative;
+}
+
+.section-with-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: inherit;
+    z-index: -1;
+}
+</style>
 
 <?php get_footer(); ?>
