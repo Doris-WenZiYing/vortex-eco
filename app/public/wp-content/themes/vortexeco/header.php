@@ -117,7 +117,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="<?php echo home_url('/products-services/'); ?>" style="
+                        <a href="<?php echo home_url('/products/'); ?>" style="
                             color: #4B5563;
                             font-weight: 500;
                             padding: 0.75rem 0;
@@ -126,7 +126,20 @@
                             text-decoration: none;
                             font-size: 0.95rem;
                         ">
-                            <?php _e('Products & Services', 'vortex-eco'); ?>
+                             <?php _e('Products', 'vortex-eco'); ?>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="<?php echo home_url('/services/'); ?>" style="
+                            color: #4B5563;
+                            font-weight: 500;
+                            padding: 0.75rem 0;
+                            transition: color 0.3s ease;
+                            position: relative;
+                            text-decoration: none;
+                            font-size: 0.95rem;
+                        ">
+                            <?php _e('Services', 'vortex-eco'); ?>
                         </a>
                     </li>
                     <li>

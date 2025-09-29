@@ -610,3 +610,1001 @@ function mytheme_customize_register( $wp_customize ) {
     );
 }
 add_action('customize_register', 'mytheme_customize_register');
+
+/**
+ * Enhanced Customizer for VortexEco Theme
+ * Add this to functions.php
+ */
+
+function vortexeco_enhanced_customizer($wp_customize) {
+    
+    // ===== HEADER CUSTOMIZATION =====
+    $wp_customize->add_section('vortexeco_header_custom', array(
+        'title'    => __('Header Customization', 'vortex-eco'),
+        'priority' => 30,
+    ));
+    
+    // Header Background Color
+    $wp_customize->add_setting('header_bg_color', array(
+        'default'           => '#ffffff',
+        'sanitize_callback' => 'sanitize_hex_color',
+    ));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'header_bg_color', array(
+        'label'    => __('Header Background Color', 'vortex-eco'),
+        'section'  => 'vortexeco_header_custom',
+    )));
+    
+    // Header Text Color
+    $wp_customize->add_setting('header_text_color', array(
+        'default'           => '#1263A0',
+        'sanitize_callback' => 'sanitize_hex_color',
+    ));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'header_text_color', array(
+        'label'    => __('Header Text Color', 'vortex-eco'),
+        'section'  => 'vortexeco_header_custom',
+    )));
+    
+    // Company Name
+    $wp_customize->add_setting('company_name', array(
+        'default'           => 'VORTEXECO',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('company_name', array(
+        'label'   => __('Company Name', 'vortex-eco'),
+        'section' => 'vortexeco_header_custom',
+        'type'    => 'text',
+    ));
+    
+    // ===== HERO SECTION CUSTOMIZATION =====
+    $wp_customize->add_section('vortexeco_hero_custom', array(
+        'title'    => __('Hero Section Customization', 'vortex-eco'),
+        'priority' => 31,
+    ));
+    
+    // Hero Background Image
+    $wp_customize->add_setting('hero_bg_image', array(
+        'default'           => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'hero_bg_image', array(
+        'label'    => __('Hero Background Image', 'vortex-eco'),
+        'section'  => 'vortexeco_hero_custom',
+    )));
+    
+    // Hero Title
+    $wp_customize->add_setting('hero_title', array(
+        'default'           => 'Professional Wind Energy Consulting Solutions',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('hero_title', array(
+        'label'   => __('Hero Title', 'vortex-eco'),
+        'section' => 'vortexeco_hero_custom',
+        'type'    => 'text',
+    ));
+    
+    // Hero Subtitle
+    $wp_customize->add_setting('hero_subtitle', array(
+        'default'           => 'VORTEXECO SOLUTIONS brings together wind industry experts...',
+        'sanitize_callback' => 'sanitize_textarea_field',
+    ));
+    $wp_customize->add_control('hero_subtitle', array(
+        'label'   => __('Hero Subtitle', 'vortex-eco'),
+        'section' => 'vortexeco_hero_custom',
+        'type'    => 'textarea',
+    ));
+    
+    // Hero Button Text
+    $wp_customize->add_setting('hero_button_text', array(
+        'default'           => 'Contact Us',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('hero_button_text', array(
+        'label'   => __('Hero Button Text', 'vortex-eco'),
+        'section' => 'vortexeco_hero_custom',
+        'type'    => 'text',
+    ));
+    
+    // ===== COLOR SCHEME CUSTOMIZATION =====
+    $wp_customize->add_section('vortexeco_colors', array(
+        'title'    => __('Color Scheme', 'vortex-eco'),
+        'priority' => 32,
+    ));
+    
+    // Primary Color
+    $wp_customize->add_setting('primary_color', array(
+        'default'           => '#1263A0',
+        'sanitize_callback' => 'sanitize_hex_color',
+    ));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'primary_color', array(
+        'label'    => __('Primary Color', 'vortex-eco'),
+        'section'  => 'vortexeco_colors',
+    )));
+    
+    // Secondary Color
+    $wp_customize->add_setting('secondary_color', array(
+        'default'           => '#00A8E6',
+        'sanitize_callback' => 'sanitize_hex_color',
+    ));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'secondary_color', array(
+        'label'    => __('Secondary Color', 'vortex-eco'),
+        'section'  => 'vortexeco_colors',
+    )));
+    
+    // Accent Color
+    $wp_customize->add_setting('accent_color', array(
+        'default'           => '#059669',
+        'sanitize_callback' => 'sanitize_hex_color',
+    ));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'accent_color', array(
+        'label'    => __('Accent Color', 'vortex-eco'),
+        'section'  => 'vortexeco_colors',
+    )));
+    
+    // ===== LAYOUT CUSTOMIZATION =====
+    $wp_customize->add_section('vortexeco_layout', array(
+        'title'    => __('Layout Options', 'vortex-eco'),
+        'priority' => 33,
+    ));
+    
+    // Container Width
+    $wp_customize->add_setting('container_width', array(
+        'default'           => '1200',
+        'sanitize_callback' => 'absint',
+    ));
+    $wp_customize->add_control('container_width', array(
+        'label'       => __('Container Max Width (px)', 'vortex-eco'),
+        'section'     => 'vortexeco_layout',
+        'type'        => 'number',
+        'input_attrs' => array(
+            'min'  => 960,
+            'max'  => 1920,
+            'step' => 20,
+        ),
+    ));
+    
+    // Section Padding
+    $wp_customize->add_setting('section_padding', array(
+        'default'           => '4',
+        'sanitize_callback' => 'absint',
+    ));
+    $wp_customize->add_control('section_padding', array(
+        'label'       => __('Section Padding (rem)', 'vortex-eco'),
+        'section'     => 'vortexeco_layout',
+        'type'        => 'number',
+        'input_attrs' => array(
+            'min'  => 2,
+            'max'  => 8,
+            'step' => 0.5,
+        ),
+    ));
+    
+    // ===== ABOUT SECTION CUSTOMIZATION =====
+    $wp_customize->add_section('vortexeco_about_custom', array(
+        'title'    => __('About Section', 'vortex-eco'),
+        'priority' => 34,
+    ));
+    
+    // About Title
+    $wp_customize->add_setting('about_title', array(
+        'default'           => 'Comprehensive Wind Energy Team',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('about_title', array(
+        'label'   => __('About Section Title', 'vortex-eco'),
+        'section' => 'vortexeco_about_custom',
+        'type'    => 'text',
+    ));
+    
+    // About Subtitle
+    $wp_customize->add_setting('about_subtitle', array(
+        'default'           => 'Focused on Every Detail',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('about_subtitle', array(
+        'label'   => __('About Section Subtitle', 'vortex-eco'),
+        'section' => 'vortexeco_about_custom',
+        'type'    => 'text',
+    ));
+    
+    // About Description
+    $wp_customize->add_setting('about_description', array(
+        'default'           => 'Want to make your project faster, more stable, and more sustainably competitive?',
+        'sanitize_callback' => 'sanitize_textarea_field',
+    ));
+    $wp_customize->add_control('about_description', array(
+        'label'   => __('About Description', 'vortex-eco'),
+        'section' => 'vortexeco_about_custom',
+        'type'    => 'textarea',
+    ));
+    
+    // About Image
+    $wp_customize->add_setting('about_image', array(
+        'default'           => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'about_image', array(
+        'label'    => __('About Section Image', 'vortex-eco'),
+        'section'  => 'vortexeco_about_custom',
+    )));
+    
+    // ===== SERVICES SECTION CUSTOMIZATION =====
+    $wp_customize->add_section('vortexeco_services_custom', array(
+        'title'    => __('Services Section', 'vortex-eco'),
+        'priority' => 35,
+    ));
+    
+    // Services Title
+    $wp_customize->add_setting('services_title', array(
+        'default'           => '8 Major Consulting Specializations',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('services_title', array(
+        'label'   => __('Services Section Title', 'vortex-eco'),
+        'section' => 'vortexeco_services_custom',
+        'type'    => 'text',
+    ));
+    
+    // Services Description
+    $wp_customize->add_setting('services_description', array(
+        'default'           => 'Comprehensive expertise across every aspect of wind energy development and operations',
+        'sanitize_callback' => 'sanitize_textarea_field',
+    ));
+    $wp_customize->add_control('services_description', array(
+        'label'   => __('Services Description', 'vortex-eco'),
+        'section' => 'vortexeco_services_custom',
+        'type'    => 'textarea',
+    ));
+    
+    // ===== CONTACT SECTION CUSTOMIZATION =====
+    $wp_customize->add_section('vortexeco_contact_custom', array(
+        'title'    => __('Contact Section', 'vortex-eco'),
+        'priority' => 36,
+    ));
+    
+    // Contact Title
+    $wp_customize->add_setting('contact_title', array(
+        'default'           => 'Ready to Power Your Wind Energy Project?',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('contact_title', array(
+        'label'   => __('Contact Section Title', 'vortex-eco'),
+        'section' => 'vortexeco_contact_custom',
+        'type'    => 'text',
+    ));
+    
+    // Contact Description
+    $wp_customize->add_setting('contact_description', array(
+        'default'           => 'Let our expert team guide you through every phase of your offshore wind development journey.',
+        'sanitize_callback' => 'sanitize_textarea_field',
+    ));
+    $wp_customize->add_control('contact_description', array(
+        'label'   => __('Contact Description', 'vortex-eco'),
+        'section' => 'vortexeco_contact_custom',
+        'type'    => 'textarea',
+    ));
+    
+    // ===== FOOTER CUSTOMIZATION =====
+    $wp_customize->add_section('vortexeco_footer_custom', array(
+        'title'    => __('Footer Customization', 'vortex-eco'),
+        'priority' => 37,
+    ));
+    
+    // Footer Background Color
+    $wp_customize->add_setting('footer_bg_color', array(
+        'default'           => '#1F2937',
+        'sanitize_callback' => 'sanitize_hex_color',
+    ));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'footer_bg_color', array(
+        'label'    => __('Footer Background Color', 'vortex-eco'),
+        'section'  => 'vortexeco_footer_custom',
+    )));
+    
+    // Footer Description
+    $wp_customize->add_setting('footer_description', array(
+        'default'           => 'Leading wind energy consulting firm providing comprehensive services...',
+        'sanitize_callback' => 'sanitize_textarea_field',
+    ));
+    $wp_customize->add_control('footer_description', array(
+        'label'   => __('Footer Description', 'vortex-eco'),
+        'section' => 'vortexeco_footer_custom',
+        'type'    => 'textarea',
+    ));
+    
+    // ===== TYPOGRAPHY CUSTOMIZATION =====
+    $wp_customize->add_section('vortexeco_typography', array(
+        'title'    => __('Typography', 'vortex-eco'),
+        'priority' => 38,
+    ));
+    
+    // Font Family
+    $wp_customize->add_setting('body_font_family', array(
+        'default'           => 'Inter',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('body_font_family', array(
+        'label'   => __('Body Font Family', 'vortex-eco'),
+        'section' => 'vortexeco_typography',
+        'type'    => 'select',
+        'choices' => array(
+            'Inter'       => 'Inter',
+            'Roboto'      => 'Roboto',
+            'Open Sans'   => 'Open Sans',
+            'Lato'        => 'Lato',
+            'Montserrat'  => 'Montserrat',
+            'Poppins'     => 'Poppins',
+        ),
+    ));
+    
+    // Heading Font Family
+    $wp_customize->add_setting('heading_font_family', array(
+        'default'           => 'Inter',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('heading_font_family', array(
+        'label'   => __('Heading Font Family', 'vortex-eco'),
+        'section' => 'vortexeco_typography',
+        'type'    => 'select',
+        'choices' => array(
+            'Inter'       => 'Inter',
+            'Roboto'      => 'Roboto',
+            'Open Sans'   => 'Open Sans',
+            'Lato'        => 'Lato',
+            'Montserrat'  => 'Montserrat',
+            'Poppins'     => 'Poppins',
+        ),
+    ));
+    
+    // Base Font Size
+    $wp_customize->add_setting('base_font_size', array(
+        'default'           => '16',
+        'sanitize_callback' => 'absint',
+    ));
+    $wp_customize->add_control('base_font_size', array(
+        'label'       => __('Base Font Size (px)', 'vortex-eco'),
+        'section'     => 'vortexeco_typography',
+        'type'        => 'number',
+        'input_attrs' => array(
+            'min'  => 14,
+            'max'  => 20,
+            'step' => 1,
+        ),
+    ));
+}
+add_action('customize_register', 'vortexeco_enhanced_customizer');
+
+/**
+ * Output customizer CSS
+ */
+function vortexeco_customizer_css() {
+    $primary_color = get_theme_mod('primary_color', '#1263A0');
+    $secondary_color = get_theme_mod('secondary_color', '#00A8E6');
+    $accent_color = get_theme_mod('accent_color', '#059669');
+    $header_bg_color = get_theme_mod('header_bg_color', '#ffffff');
+    $header_text_color = get_theme_mod('header_text_color', '#1263A0');
+    $footer_bg_color = get_theme_mod('footer_bg_color', '#1F2937');
+    $container_width = get_theme_mod('container_width', '1200');
+    $section_padding = get_theme_mod('section_padding', '4');
+    $body_font = get_theme_mod('body_font_family', 'Inter');
+    $heading_font = get_theme_mod('heading_font_family', 'Inter');
+    $base_font_size = get_theme_mod('base_font_size', '16');
+    
+    ?>
+    <style type="text/css">
+        :root {
+            --primary-color: <?php echo esc_attr($primary_color); ?>;
+            --secondary-color: <?php echo esc_attr($secondary_color); ?>;
+            --accent-color: <?php echo esc_attr($accent_color); ?>;
+            --container-width: <?php echo esc_attr($container_width); ?>px;
+            --section-padding: <?php echo esc_attr($section_padding); ?>rem;
+            --base-font-size: <?php echo esc_attr($base_font_size); ?>px;
+        }
+        
+        body {
+            font-family: '<?php echo esc_attr($body_font); ?>', sans-serif;
+            font-size: var(--base-font-size);
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: '<?php echo esc_attr($heading_font); ?>', sans-serif;
+        }
+        
+        .site-header {
+            background-color: <?php echo esc_attr($header_bg_color); ?>;
+        }
+        
+        .site-branding div:last-child {
+            color: <?php echo esc_attr($header_text_color); ?>;
+        }
+        
+        .container {
+            max-width: var(--container-width);
+        }
+        
+        .section {
+            padding: var(--section-padding) 0;
+        }
+        
+        .site-footer {
+            background: <?php echo esc_attr($footer_bg_color); ?>;
+        }
+        
+        /* Primary color applications */
+        .btn-primary,
+        .filter-btn.active,
+        .service-filter-btn.active,
+        .main-category-btn.active {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+        
+        /* Text color applications */
+        .site-branding a,
+        .main-navigation a:hover,
+        .post-title a:hover,
+        .read-more {
+            color: var(--primary-color);
+        }
+        
+        /* Border and accent color applications */
+        .card:hover,
+        .service-card:hover,
+        .product-card:hover {
+            border-color: var(--secondary-color);
+        }
+        
+        /* Custom gradient backgrounds */
+        .page-header,
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        }
+    </style>
+    <?php
+}
+add_action('wp_head', 'vortexeco_customizer_css');
+
+/**
+ * Advanced Page Builder for Each Page
+ */
+function vortexeco_page_builder_meta_box() {
+    add_meta_box(
+        'vortexeco_page_builder',
+        __('Page Builder', 'vortex-eco'),
+        'vortexeco_page_builder_callback',
+        'page'
+    );
+}
+add_action('add_meta_boxes', 'vortexeco_page_builder_meta_box');
+
+function vortexeco_page_builder_callback($post) {
+    wp_nonce_field('vortexeco_save_page_builder', 'vortexeco_page_builder_nonce');
+    
+    $sections = get_post_meta($post->ID, '_page_sections', true);
+    if (!$sections) {
+        $sections = array();
+    }
+    
+    ?>
+    <div id="vortexeco-page-builder">
+        <div id="sections-container">
+            <?php foreach ($sections as $index => $section): ?>
+                <div class="section-item" data-index="<?php echo $index; ?>">
+                    <h4>Section <?php echo $index + 1; ?></h4>
+                    
+                    <label>Section Type:</label>
+                    <select name="sections[<?php echo $index; ?>][type]">
+                        <option value="hero" <?php selected($section['type'], 'hero'); ?>>Hero</option>
+                        <option value="about" <?php selected($section['type'], 'about'); ?>>About</option>
+                        <option value="services" <?php selected($section['type'], 'services'); ?>>Services</option>
+                        <option value="contact" <?php selected($section['type'], 'contact'); ?>>Contact</option>
+                        <option value="custom" <?php selected($section['type'], 'custom'); ?>>Custom HTML</option>
+                    </select>
+                    
+                    <label>Title:</label>
+                    <input type="text" name="sections[<?php echo $index; ?>][title]" value="<?php echo esc_attr($section['title']); ?>" />
+                    
+                    <label>Content:</label>
+                    <textarea name="sections[<?php echo $index; ?>][content]" rows="5"><?php echo esc_textarea($section['content']); ?></textarea>
+                    
+                    <label>Background Color:</label>
+                    <input type="color" name="sections[<?php echo $index; ?>][bg_color]" value="<?php echo esc_attr($section['bg_color']); ?>" />
+                    
+                    <button type="button" class="remove-section">Remove Section</button>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        
+        <button type="button" id="add-section">Add Section</button>
+    </div>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let sectionIndex = <?php echo count($sections); ?>;
+        
+        document.getElementById('add-section').addEventListener('click', function() {
+            const container = document.getElementById('sections-container');
+            const sectionHTML = `
+                <div class="section-item" data-index="${sectionIndex}">
+                    <h4>Section ${sectionIndex + 1}</h4>
+                    
+                    <label>Section Type:</label>
+                    <select name="sections[${sectionIndex}][type]">
+                        <option value="hero">Hero</option>
+                        <option value="about">About</option>
+                        <option value="services">Services</option>
+                        <option value="contact">Contact</option>
+                        <option value="custom">Custom HTML</option>
+                    </select>
+                    
+                    <label>Title:</label>
+                    <input type="text" name="sections[${sectionIndex}][title]" />
+                    
+                    <label>Content:</label>
+                    <textarea name="sections[${sectionIndex}][content]" rows="5"></textarea>
+                    
+                    <label>Background Color:</label>
+                    <input type="color" name="sections[${sectionIndex}][bg_color]" value="#ffffff" />
+                    
+                    <button type="button" class="remove-section">Remove Section</button>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', sectionHTML);
+            sectionIndex++;
+        });
+        
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-section')) {
+                e.target.parentElement.remove();
+            }
+        });
+    });
+    </script>
+    
+    <style>
+    #vortexeco-page-builder {
+        padding: 20px;
+    }
+    
+    .section-item {
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin-bottom: 15px;
+        background: #f9f9f9;
+    }
+    
+    .section-item label {
+        display: block;
+        margin: 10px 0 5px 0;
+        font-weight: bold;
+    }
+    
+    .section-item input,
+    .section-item select,
+    .section-item textarea {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    
+    .remove-section {
+        background: #dc3232;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        cursor: pointer;
+    }
+    
+    #add-section {
+        background: #0073aa;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+    }
+    </style>
+    <?php
+}
+
+function vortexeco_save_page_builder($post_id) {
+    if (!isset($_POST['vortexeco_page_builder_nonce']) || 
+        !wp_verify_nonce($_POST['vortexeco_page_builder_nonce'], 'vortexeco_save_page_builder')) {
+        return;
+    }
+    
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+    
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+    
+    if (isset($_POST['sections'])) {
+        update_post_meta($post_id, '_page_sections', $_POST['sections']);
+    }
+}
+add_action('save_post', 'vortexeco_save_page_builder');
+
+
+// 1. 建立產品自定義文章類型
+function create_vortexeco_product_cpt() {
+    register_post_type('vortex_products', array(
+        'labels' => array(
+            'name' => __('Wind Products', 'vortex-eco'),
+            'singular_name' => __('Product', 'vortex-eco'),
+            'add_new' => __('Add New Product', 'vortex-eco'),
+            'add_new_item' => __('Add New Product', 'vortex-eco'),
+            'edit_item' => __('Edit Product', 'vortex-eco'),
+            'view_item' => __('View Product', 'vortex-eco'),
+            'search_items' => __('Search Products', 'vortex-eco'),
+        ),
+        'public' => true,
+        'has_archive' => true,
+        'supports' => array('title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'),
+        'menu_icon' => 'dashicons-admin-tools',
+        'show_in_rest' => true,
+        'rewrite' => array('slug' => 'wind-products'),
+    ));
+    
+    // 產品分類
+    register_taxonomy('product_category', 'vortex_products', array(
+        'labels' => array(
+            'name' => __('Product Categories', 'vortex-eco'),
+            'singular_name' => __('Category', 'vortex-eco'),
+        ),
+        'hierarchical' => true,
+        'show_in_rest' => true,
+        'rewrite' => array('slug' => 'product-category'),
+    ));
+    
+    // 產品品牌
+    register_taxonomy('product_brand', 'vortex_products', array(
+        'labels' => array(
+            'name' => __('Brands', 'vortex-eco'),
+            'singular_name' => __('Brand', 'vortex-eco'),
+        ),
+        'hierarchical' => false,
+        'show_in_rest' => true,
+        'rewrite' => array('slug' => 'brand'),
+    ));
+}
+add_action('init', 'create_vortexeco_product_cpt');
+
+// 2. 產品查詢函數
+function get_vortexeco_products($args = array()) {
+    $default_args = array(
+        'post_type' => 'vortex_products',
+        'post_status' => 'publish',
+        'posts_per_page' => -1,
+        'meta_query' => array(),
+        'tax_query' => array(),
+    );
+    
+    $args = wp_parse_args($args, $default_args);
+    
+    $products = get_posts($args);
+    $product_data = array();
+    
+    foreach ($products as $product) {
+        $categories = get_the_terms($product->ID, 'product_category');
+        $brands = get_the_terms($product->ID, 'product_brand');
+        $features = get_post_meta($product->ID, '_product_features', true);
+        
+        $product_data[] = array(
+            'id' => $product->ID,
+            'title' => $product->post_title,
+            'description' => $product->post_excerpt ?: substr(strip_tags($product->post_content), 0, 150) . '...',
+            'permalink' => get_permalink($product->ID),
+            'thumbnail' => get_the_post_thumbnail_url($product->ID, 'medium'),
+            'categories' => $categories ? wp_list_pluck($categories, 'slug') : array(),
+            'category_names' => $categories ? wp_list_pluck($categories, 'name') : array(),
+            'brands' => $brands ? wp_list_pluck($brands, 'slug') : array(),
+            'brand_names' => $brands ? wp_list_pluck($brands, 'name') : array(),
+            'features' => $features ? array_filter(explode("\n", $features)) : array(),
+            'price' => get_post_meta($product->ID, '_product_price', true),
+            'icon' => get_post_meta($product->ID, '_product_icon', true),
+            'color_primary' => get_post_meta($product->ID, '_product_color_primary', true),
+            'color_secondary' => get_post_meta($product->ID, '_product_color_secondary', true),
+            'warranty' => get_post_meta($product->ID, '_product_warranty', true),
+            'delivery_time' => get_post_meta($product->ID, '_product_delivery_time', true),
+            'certification' => get_post_meta($product->ID, '_product_certification', true),
+        );
+    }
+    
+    return $product_data;
+}
+
+// 3. 產品自定義欄位
+function vortexeco_product_meta_boxes() {
+    add_meta_box(
+        'product_details',
+        'Product Details',
+        'vortexeco_product_details_callback',
+        'vortex_products'
+    );
+}
+add_action('add_meta_boxes', 'vortexeco_product_meta_boxes');
+
+function vortexeco_product_details_callback($post) {
+    wp_nonce_field('vortexeco_save_product', 'product_nonce');
+    
+    $price = get_post_meta($post->ID, '_product_price', true);
+    $features = get_post_meta($post->ID, '_product_features', true);
+    $specifications = get_post_meta($post->ID, '_product_specifications', true);
+    $icon = get_post_meta($post->ID, '_product_icon', true);
+    $color_primary = get_post_meta($post->ID, '_product_color_primary', true);
+    $color_secondary = get_post_meta($post->ID, '_product_color_secondary', true);
+    $warranty = get_post_meta($post->ID, '_product_warranty', true);
+    $delivery_time = get_post_meta($post->ID, '_product_delivery_time', true);
+    $certification = get_post_meta($post->ID, '_product_certification', true);
+    
+    ?>
+    <table class="form-table">
+        <tr>
+            <th><label for="product_price">Price (Optional)</label></th>
+            <td><input type="text" id="product_price" name="product_price" value="<?php echo esc_attr($price); ?>" placeholder="Contact for pricing" class="regular-text" /></td>
+        </tr>
+        <tr>
+            <th><label for="product_features">Key Features (one per line)</label></th>
+            <td><textarea id="product_features" name="product_features" rows="5" style="width: 100%;"><?php echo esc_textarea($features); ?></textarea></td>
+        </tr>
+        <tr>
+            <th><label for="product_specifications">Technical Specifications</label></th>
+            <td><textarea id="product_specifications" name="product_specifications" rows="5" style="width: 100%;"><?php echo esc_textarea($specifications); ?></textarea></td>
+        </tr>
+        <tr>
+            <th><label for="product_icon">Product Icon</label></th>
+            <td><input type="text" id="product_icon" name="product_icon" value="<?php echo esc_attr($icon); ?>" placeholder="🔧 or text" class="regular-text" /></td>
+        </tr>
+        <tr>
+            <th><label for="product_color_primary">Primary Color</label></th>
+            <td><input type="color" id="product_color_primary" name="product_color_primary" value="<?php echo esc_attr($color_primary ?: '#1263A0'); ?>" /></td>
+        </tr>
+        <tr>
+            <th><label for="product_color_secondary">Secondary Color</label></th>
+            <td><input type="color" id="product_color_secondary" name="product_color_secondary" value="<?php echo esc_attr($color_secondary ?: '#00A8E6'); ?>" /></td>
+        </tr>
+        <tr>
+            <th><label for="product_warranty">Warranty Period</label></th>
+            <td><input type="text" id="product_warranty" name="product_warranty" value="<?php echo esc_attr($warranty ?: '24 months'); ?>" class="regular-text" /></td>
+        </tr>
+        <tr>
+            <th><label for="product_delivery_time">Delivery Time</label></th>
+            <td><input type="text" id="product_delivery_time" name="product_delivery_time" value="<?php echo esc_attr($delivery_time ?: '2-4 weeks'); ?>" class="regular-text" /></td>
+        </tr>
+        <tr>
+            <th><label for="product_certification">Certification</label></th>
+            <td><input type="text" id="product_certification" name="product_certification" value="<?php echo esc_attr($certification ?: 'CE/ISO'); ?>" class="regular-text" /></td>
+        </tr>
+    </table>
+    <?php
+}
+
+function vortexeco_save_product_meta($post_id) {
+    if (!isset($_POST['product_nonce']) || !wp_verify_nonce($_POST['product_nonce'], 'vortexeco_save_product')) {
+        return;
+    }
+    
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (!current_user_can('edit_post', $post_id)) return;
+    
+    $fields = array(
+        'product_price', 'product_features', 'product_specifications', 
+        'product_icon', 'product_color_primary', 'product_color_secondary',
+        'product_warranty', 'product_delivery_time', 'product_certification'
+    );
+    
+    foreach ($fields as $field) {
+        if (isset($_POST[$field])) {
+            if (strpos($field, 'color') !== false) {
+                update_post_meta($post_id, '_' . $field, sanitize_hex_color($_POST[$field]));
+            } elseif ($field === 'product_features' || $field === 'product_specifications') {
+                update_post_meta($post_id, '_' . $field, sanitize_textarea_field($_POST[$field]));
+            } else {
+                update_post_meta($post_id, '_' . $field, sanitize_text_field($_POST[$field]));
+            }
+        }
+    }
+}
+add_action('save_post', 'vortexeco_save_product_meta');
+
+// 4. 管理員界面
+function vortexeco_admin_menu() {
+    add_menu_page(
+        'VortexEco Manager',
+        'VortexEco',
+        'manage_options',
+        'vortexeco-manager',
+        'vortexeco_admin_page',
+        'dashicons-admin-tools',
+        3
+    );
+    
+    add_submenu_page(
+        'vortexeco-manager',
+        'Quick Add Product',
+        'Quick Add Product',
+        'manage_options',
+        'vortexeco-quick-add',
+        'vortexeco_quick_add_page'
+    );
+}
+add_action('admin_menu', 'vortexeco_admin_menu');
+
+function vortexeco_admin_page() {
+    ?>
+    <div class="wrap">
+        <h1>VortexEco Content Manager</h1>
+        
+        <div class="card" style="max-width: 800px;">
+            <h2>Content Statistics</h2>
+            
+            <?php
+            $product_count = wp_count_posts('vortex_products')->publish;
+            $article_count = wp_count_posts('post')->publish;
+            $page_count = wp_count_posts('page')->publish;
+            ?>
+            
+            <table class="widefat">
+                <tr>
+                    <td><strong>Products:</strong></td>
+                    <td><?php echo $product_count; ?></td>
+                    <td><a href="<?php echo admin_url('edit.php?post_type=vortex_products'); ?>" class="button">Manage</a></td>
+                </tr>
+                <tr>
+                    <td><strong>Articles:</strong></td>
+                    <td><?php echo $article_count; ?></td>
+                    <td><a href="<?php echo admin_url('edit.php'); ?>" class="button">Manage</a></td>
+                </tr>
+                <tr>
+                    <td><strong>Pages:</strong></td>
+                    <td><?php echo $page_count; ?></td>
+                    <td><a href="<?php echo admin_url('edit.php?post_type=page'); ?>" class="button">Manage</a></td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="card" style="max-width: 800px; margin-top: 20px;">
+            <h2>Quick Actions</h2>
+            <p>
+                <a href="<?php echo admin_url('post-new.php?post_type=vortex_products'); ?>" class="button button-primary">Add New Product</a>
+                <a href="<?php echo admin_url('post-new.php'); ?>" class="button button-primary">Add New Article</a>
+                <a href="<?php echo admin_url('customize.php'); ?>" class="button">Customize Theme</a>
+            </p>
+        </div>
+    </div>
+    <?php
+}
+
+function vortexeco_quick_add_page() {
+    if (isset($_POST['submit'])) {
+        $product_data = array(
+            'post_title' => sanitize_text_field($_POST['product_title']),
+            'post_content' => wp_kses_post($_POST['product_description']),
+            'post_excerpt' => sanitize_text_field($_POST['product_excerpt']),
+            'post_status' => 'publish',
+            'post_type' => 'vortex_products'
+        );
+        
+        $product_id = wp_insert_post($product_data);
+        
+        if ($product_id) {
+            // 儲存自定義欄位
+            update_post_meta($product_id, '_product_price', sanitize_text_field($_POST['product_price']));
+            update_post_meta($product_id, '_product_features', sanitize_textarea_field($_POST['product_features']));
+            update_post_meta($product_id, '_product_icon', sanitize_text_field($_POST['product_icon']));
+            update_post_meta($product_id, '_product_color_primary', sanitize_hex_color($_POST['product_color_primary']));
+            
+            // 設定分類
+            if (!empty($_POST['product_category'])) {
+                wp_set_object_terms($product_id, intval($_POST['product_category']), 'product_category');
+            }
+            
+            // 設定品牌
+            if (!empty($_POST['product_brand'])) {
+                wp_set_object_terms($product_id, intval($_POST['product_brand']), 'product_brand');
+            }
+            
+            echo '<div class="notice notice-success"><p>Product added successfully! <a href="' . get_edit_post_link($product_id) . '">Edit Product</a></p></div>';
+        }
+    }
+    
+    $categories = get_terms(array('taxonomy' => 'product_category', 'hide_empty' => false));
+    $brands = get_terms(array('taxonomy' => 'product_brand', 'hide_empty' => false));
+    ?>
+    
+    <div class="wrap">
+        <h1>Quick Add Product</h1>
+        
+        <form method="post" style="max-width: 800px;">
+            <table class="form-table">
+                <tr>
+                    <th><label for="product_title">Product Name *</label></th>
+                    <td><input type="text" id="product_title" name="product_title" required class="regular-text" /></td>
+                </tr>
+                <tr>
+                    <th><label for="product_excerpt">Short Description</label></th>
+                    <td><input type="text" id="product_excerpt" name="product_excerpt" class="large-text" /></td>
+                </tr>
+                <tr>
+                    <th><label for="product_description">Full Description</label></th>
+                    <td><textarea id="product_description" name="product_description" rows="5" class="large-text"></textarea></td>
+                </tr>
+                <tr>
+                    <th><label for="product_category">Category</label></th>
+                    <td>
+                        <select id="product_category" name="product_category">
+                            <option value="">Select Category</option>
+                            <?php foreach ($categories as $category): ?>
+                            <option value="<?php echo $category->term_id; ?>"><?php echo $category->name; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th><label for="product_brand">Brand</label></th>
+                    <td>
+                        <select id="product_brand" name="product_brand">
+                            <option value="">Select Brand</option>
+                            <?php foreach ($brands as $brand): ?>
+                            <option value="<?php echo $brand->term_id; ?>"><?php echo $brand->name; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th><label for="product_features">Key Features (one per line)</label></th>
+                    <td><textarea id="product_features" name="product_features" rows="4" class="large-text"></textarea></td>
+                </tr>
+                <tr>
+                    <th><label for="product_icon">Product Icon</label></th>
+                    <td><input type="text" id="product_icon" name="product_icon" placeholder="🔧" /></td>
+                </tr>
+                <tr>
+                    <th><label for="product_color_primary">Primary Color</label></th>
+                    <td><input type="color" id="product_color_primary" name="product_color_primary" value="#1263A0" /></td>
+                </tr>
+                <tr>
+                    <th><label for="product_price">Price (optional)</label></th>
+                    <td><input type="text" id="product_price" name="product_price" placeholder="Contact for pricing" /></td>
+                </tr>
+            </table>
+            
+            <?php submit_button('Add Product'); ?>
+        </form>
+    </div>
+    <?php
+}
+
+// 5. 初始化預設分類和品牌
+function vortexeco_create_default_terms() {
+    // 創建預設產品分類
+    $default_categories = array(
+        'turbine-parts' => 'Turbine Components',
+        'ppe' => 'Safety Equipment', 
+        'blade-materials' => 'Blade Materials',
+        'tp-section' => 'Coatings',
+        'turbine-trading' => 'Turbine Trading'
+    );
+    
+    foreach ($default_categories as $slug => $name) {
+        if (!term_exists($name, 'product_category')) {
+            wp_insert_term($name, 'product_category', array('slug' => $slug));
+        }
+    }
+    
+    // 創建預設品牌
+    $default_brands = array('Vestas', 'Siemens', 'GE', 'Others');
+    
+    foreach ($default_brands as $brand) {
+        if (!term_exists($brand, 'product_brand')) {
+            wp_insert_term($brand, 'product_brand');
+        }
+    }
+}
+add_action('after_switch_theme', 'vortexeco_create_default_terms');
+
+// 6. 刷新重寫規則
+function vortexeco_flush_rewrite_rules() {
+    create_vortexeco_product_cpt();
+    flush_rewrite_rules();
+}
+register_activation_hook(__FILE__, 'vortexeco_flush_rewrite_rules');
+?>
