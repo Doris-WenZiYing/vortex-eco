@@ -1425,8 +1425,155 @@ function vortexeco_admin_menu() {
         'vortexeco-quick-add',
         'vortexeco_quick_add_page'
     );
+    
+    add_submenu_page(
+        'vortexeco-manager',
+        'Sample Products',
+        'Sample Products',
+        'manage_options',
+        'vortexeco-sample-products',
+        'vortexeco_sample_products_page'
+    );
 }
 add_action('admin_menu', 'vortexeco_admin_menu');
+
+// Add Sample Products Function
+function vortexeco_sample_products_page() {
+    if (isset($_POST['create_samples'])) {
+        vortexeco_create_sample_products();
+        echo '<div class="notice notice-success"><p>Sample products created successfully!</p></div>';
+    }
+    
+    ?>
+    <div class="wrap">
+        <h1>Sample Products Generator</h1>
+        <p>Click the button below to create sample products for testing.</p>
+        
+        <form method="post">
+            <input type="hidden" name="create_samples" value="1">
+            <?php submit_button('Create Sample Products'); ?>
+        </form>
+        
+        <h2>Current Products</h2>
+        <?php
+        $products = get_vortexeco_products();
+        if (!empty($products)) {
+            echo '<table class="widefat"><thead><tr><th>Title</th><th>Category</th><th>Brand</th><th>Actions</th></tr></thead><tbody>';
+            foreach ($products as $product) {
+                echo '<tr>';
+                echo '<td>' . esc_html($product['title']) . '</td>';
+                echo '<td>' . implode(', ', $product['category_names']) . '</td>';
+                echo '<td>' . implode(', ', $product['brand_names']) . '</td>';
+                echo '<td><a href="' . get_edit_post_link($product['id']) . '">Edit</a></td>';
+                echo '</tr>';
+            }
+            echo '</tbody></table>';
+        } else {
+            echo '<p>No products found. Create some sample products to get started!</p>';
+        }
+        ?>
+    </div>
+    <?php
+}
+
+function vortexeco_create_sample_products() {
+    $sample_products = [
+        [
+            'title' => 'Vestas Turbine Components',
+            'content' => 'Professional Vestas turbine repair and maintenance parts, ensuring optimal equipment performance and extending turbine service life. High-quality components designed for maximum reliability.',
+            'excerpt' => 'Professional Vestas turbine repair and maintenance parts',
+            'category' => 'turbine-parts',
+            'brand' => 'vestas',
+            'icon' => '⚙️',
+            'color_primary' => '#1263A0',
+            'color_secondary' => '#00A8E6',
+            'features' => "Repair Parts\nMaintenance Support\nOriginal Quality\n24/7 Technical Support",
+            'price' => 'Contact for pricing',
+            'warranty' => '24 months',
+            'delivery_time' => '2-4 weeks',
+            'certification' => 'CE/ISO'
+        ],
+        [
+            'title' => 'Siemens Turbine Components',
+            'content' => 'High-quality Siemens turbine system parts with comprehensive technical support services. Genuine OEM parts for optimal performance.',
+            'excerpt' => 'High-quality Siemens turbine system parts',
+            'category' => 'turbine-parts',
+            'brand' => 'siemens',
+            'icon' => '🔩',
+            'color_primary' => '#00A8E6',
+            'color_secondary' => '#1263A0',
+            'features' => "OEM Parts\nTechnical Support\nQuality Assured\nFast Delivery",
+            'price' => 'Contact for pricing',
+            'warranty' => '24 months',
+            'delivery_time' => '2-4 weeks',
+            'certification' => 'CE/ISO'
+        ],
+        [
+            'title' => 'Personal Protective Equipment',
+            'content' => 'Complete range of safety equipment designed specifically for wind turbine operations. Industry-certified and tested for maximum protection.',
+            'excerpt' => 'Professional wind turbine safety equipment',
+            'category' => 'ppe',
+            'brand' => 'others',
+            'icon' => '🦺',
+            'color_primary' => '#059669',
+            'color_secondary' => '#10B981',
+            'features' => "Hard Hats\nSafety Harnesses\nProtective Gloves\nSafety Boots",
+            'price' => 'From $50',
+            'warranty' => '12 months',
+            'delivery_time' => '1-2 weeks',
+            'certification' => 'EN/ANSI'
+        ],
+        [
+            'title' => 'Blade Repair Materials',
+            'content' => 'Professional blade repair materials including fiberglass, resins, and structural adhesives. Everything needed for complete blade maintenance.',
+            'excerpt' => 'Complete blade repair and maintenance materials',
+            'category' => 'blade-materials',
+            'brand' => 'others',
+            'icon' => '🔧',
+            'color_primary' => '#7C3AED',
+            'color_secondary' => '#A855F7',
+            'features' => "Fiberglass Cloth\nEpoxy Resins\nStructural Adhesives\nRepair Kits",
+            'price' => 'Contact for pricing',
+            'warranty' => '18 months',
+            'delivery_time' => '1-3 weeks',
+            'certification' => 'ISO/DNV'
+        ]
+    ];
+    
+    foreach ($sample_products as $product) {
+        $existing = get_page_by_title($product['title'], OBJECT, 'vortex_products');
+        if ($existing) continue;
+        
+        $product_id = wp_insert_post([
+            'post_title' => $product['title'],
+            'post_content' => $product['content'],
+            'post_excerpt' => $product['excerpt'],
+            'post_status' => 'publish',
+            'post_type' => 'vortex_products'
+        ]);
+        
+        if ($product_id) {
+            $category_term = get_term_by('slug', $product['category'], 'product_category');
+            if ($category_term) {
+                wp_set_object_terms($product_id, $category_term->term_id, 'product_category');
+            }
+            
+            $brand_term = get_term_by('slug', $product['brand'], 'product_brand');
+            if ($brand_term) {
+                wp_set_object_terms($product_id, $brand_term->term_id, 'product_brand');
+            }
+            
+            update_post_meta($product_id, '_product_icon', $product['icon']);
+            update_post_meta($product_id, '_product_color_primary', $product['color_primary']);
+            update_post_meta($product_id, '_product_color_secondary', $product['color_secondary']);
+            update_post_meta($product_id, '_product_features', $product['features']);
+            update_post_meta($product_id, '_product_price', $product['price']);
+            update_post_meta($product_id, '_product_warranty', $product['warranty']);
+            update_post_meta($product_id, '_product_delivery_time', $product['delivery_time']);
+            update_post_meta($product_id, '_product_certification', $product['certification']);
+        }
+    }
+}
 
 function vortexeco_admin_page() {
     ?>
@@ -1607,4 +1754,574 @@ function vortexeco_flush_rewrite_rules() {
     flush_rewrite_rules();
 }
 register_activation_hook(__FILE__, 'vortexeco_flush_rewrite_rules');
+function create_insight_articles_cpt() {
+    register_post_type('insight_articles', array(
+        'labels' => array(
+            'name' => __('Market Insights', 'vortex-eco'),
+            'singular_name' => __('Insight Article', 'vortex-eco'),
+            'add_new' => __('Add New Article', 'vortex-eco'),
+            'add_new_item' => __('Add New Insight Article', 'vortex-eco'),
+            'edit_item' => __('Edit Article', 'vortex-eco'),
+            'view_item' => __('View Article', 'vortex-eco'),
+            'search_items' => __('Search Articles', 'vortex-eco'),
+        ),
+        'public' => true,
+        'has_archive' => true,
+        'supports' => array('title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'),
+        'menu_icon' => 'dashicons-analytics',
+        'show_in_rest' => true,
+        'rewrite' => array('slug' => 'insights'),
+    ));
+    
+    // Article Categories
+    register_taxonomy('insight_category', 'insight_articles', array(
+        'labels' => array(
+            'name' => __('Insight Categories', 'vortex-eco'),
+            'singular_name' => __('Category', 'vortex-eco'),
+        ),
+        'hierarchical' => true,
+        'show_in_rest' => true,
+        'rewrite' => array('slug' => 'insight-category'),
+    ));
+}
+add_action('init', 'create_insight_articles_cpt');
+
+// 2. Create Default Insight Categories
+function create_default_insight_categories() {
+    $categories = array(
+        'market-analysis' => 'Market Analysis',
+        'technology' => 'Technology Innovation',
+        'policy' => 'Policy & Regulations',
+        'industry-news' => 'Industry News'
+    );
+    
+    foreach ($categories as $slug => $name) {
+        if (!term_exists($name, 'insight_category')) {
+            wp_insert_term($name, 'insight_category', array('slug' => $slug));
+        }
+    }
+}
+add_action('after_switch_theme', 'create_default_insight_categories');
+
+// 3. Add Custom Fields for Insight Articles
+function insight_article_meta_boxes() {
+    add_meta_box(
+        'insight_details',
+        'Article Details',
+        'insight_details_callback',
+        'insight_articles'
+    );
+}
+add_action('add_meta_boxes', 'insight_article_meta_boxes');
+
+function insight_details_callback($post) {
+    wp_nonce_field('save_insight_details', 'insight_nonce');
+    
+    $read_time = get_post_meta($post->ID, '_read_time', true);
+    $featured = get_post_meta($post->ID, '_featured_article', true);
+    $author_name = get_post_meta($post->ID, '_author_name', true);
+    
+    ?>
+    <table class="form-table">
+        <tr>
+            <th><label for="read_time">Reading Time (minutes)</label></th>
+            <td>
+                <input type="number" id="read_time" name="read_time" 
+                       value="<?php echo esc_attr($read_time ?: '5'); ?>" 
+                       min="1" max="60" class="regular-text" />
+            </td>
+        </tr>
+        <tr>
+            <th><label for="author_name">Author Name</label></th>
+            <td>
+                <input type="text" id="author_name" name="author_name" 
+                       value="<?php echo esc_attr($author_name ?: 'VortexEco Team'); ?>" 
+                       class="regular-text" />
+            </td>
+        </tr>
+        <tr>
+            <th><label for="featured_article">Featured Article</label></th>
+            <td>
+                <input type="checkbox" id="featured_article" name="featured_article" 
+                       value="1" <?php checked($featured, '1'); ?> />
+                <span class="description">Check to feature this article on the insights page</span>
+            </td>
+        </tr>
+    </table>
+    <?php
+}
+
+// 4. Save Custom Fields
+function save_insight_details($post_id) {
+    if (!isset($_POST['insight_nonce']) || !wp_verify_nonce($_POST['insight_nonce'], 'save_insight_details')) {
+        return;
+    }
+    
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (!current_user_can('edit_post', $post_id)) return;
+    
+    if (isset($_POST['read_time'])) {
+        update_post_meta($post_id, '_read_time', intval($_POST['read_time']));
+    }
+    
+    if (isset($_POST['author_name'])) {
+        update_post_meta($post_id, '_author_name', sanitize_text_field($_POST['author_name']));
+    }
+    
+    if (isset($_POST['featured_article'])) {
+        update_post_meta($post_id, '_featured_article', '1');
+    } else {
+        delete_post_meta($post_id, '_featured_article');
+    }
+}
+add_action('save_post', 'save_insight_details');
+
+// 5. Get Insight Articles Function
+function get_insight_articles($args = array()) {
+    $default_args = array(
+        'post_type' => 'insight_articles',
+        'post_status' => 'publish',
+        'posts_per_page' => -1,
+        'orderby' => 'date',
+        'order' => 'DESC',
+    );
+    
+    $args = wp_parse_args($args, $default_args);
+    $articles = get_posts($args);
+    $article_data = array();
+    
+    foreach ($articles as $article) {
+        $categories = get_the_terms($article->ID, 'insight_category');
+        $read_time = get_post_meta($article->ID, '_read_time', true);
+        $author_name = get_post_meta($article->ID, '_author_name', true);
+        $featured = get_post_meta($article->ID, '_featured_article', true);
+        
+        $article_data[] = array(
+            'id' => $article->ID,
+            'title' => $article->post_title,
+            'excerpt' => $article->post_excerpt ?: wp_trim_words($article->post_content, 30),
+            'content' => $article->post_content,
+            'permalink' => get_permalink($article->ID),
+            'thumbnail' => get_the_post_thumbnail_url($article->ID, 'large'),
+            'date' => get_the_date('F j, Y', $article->ID),
+            'categories' => $categories ? wp_list_pluck($categories, 'slug') : array(),
+            'category_names' => $categories ? wp_list_pluck($categories, 'name') : array(),
+            'read_time' => $read_time ?: 5,
+            'author' => $author_name ?: 'VortexEco Team',
+            'featured' => $featured == '1',
+        );
+    }
+    
+    return $article_data;
+}
+
+// 6. Admin Page for Sample Articles
+function vortexeco_insights_admin_page() {
+    add_submenu_page(
+        'vortexeco-manager',
+        'Sample Insights',
+        'Sample Insights',
+        'manage_options',
+        'vortexeco-sample-insights',
+        'vortexeco_sample_insights_callback'
+    );
+}
+add_action('admin_menu', 'vortexeco_insights_admin_page', 20);
+
+function vortexeco_sample_insights_callback() {
+    if (isset($_POST['create_sample_insights'])) {
+        vortexeco_create_sample_insights();
+        echo '<div class="notice notice-success"><p>Sample insight articles created successfully!</p></div>';
+    }
+    
+    ?>
+    <div class="wrap">
+        <h1>Market Insights Manager</h1>
+        <p>Create sample articles for testing or manage existing articles.</p>
+        
+        <form method="post">
+            <input type="hidden" name="create_sample_insights" value="1">
+            <?php submit_button('Create Sample Articles'); ?>
+        </form>
+        
+        <h2>Current Articles</h2>
+        <?php
+        $articles = get_insight_articles();
+        if (!empty($articles)) {
+            echo '<table class="widefat">';
+            echo '<thead><tr><th>Title</th><th>Category</th><th>Date</th><th>Featured</th><th>Actions</th></tr></thead>';
+            echo '<tbody>';
+            foreach ($articles as $article) {
+                echo '<tr>';
+                echo '<td>' . esc_html($article['title']) . '</td>';
+                echo '<td>' . implode(', ', $article['category_names']) . '</td>';
+                echo '<td>' . $article['date'] . '</td>';
+                echo '<td>' . ($article['featured'] ? '⭐ Yes' : 'No') . '</td>';
+                echo '<td>';
+                echo '<a href="' . get_edit_post_link($article['id']) . '">Edit</a> | ';
+                echo '<a href="' . $article['permalink'] . '" target="_blank">View</a>';
+                echo '</td>';
+                echo '</tr>';
+            }
+            echo '</tbody></table>';
+        } else {
+            echo '<p>No articles found. Create some sample articles to get started!</p>';
+        }
+        ?>
+    </div>
+    <?php
+}
+
+function vortexeco_create_sample_insights() {
+    $sample_articles = array(
+        array(
+            'title' => 'Global Wind Energy Market Development Trends 2024',
+            'content' => 'The global wind energy market continues to show strong growth in 2024, with significant developments in both onshore and offshore sectors. Major markets in Asia-Pacific, Europe, and North America are leading the expansion, driven by supportive government policies and decreasing technology costs.
+
+Key highlights include breakthrough innovations in turbine technology, with manufacturers introducing larger and more efficient models. Offshore wind capacity is expected to triple by 2030, with floating wind technology opening up new possibilities in deeper waters.
+
+Investment in wind energy infrastructure has reached record levels, with both public and private sectors committing substantial capital to renewable energy projects. The supply chain is evolving to support this growth, with local manufacturing capabilities expanding in key markets.',
+            'excerpt' => 'In-depth analysis of the latest developments in the global wind energy industry, including technological innovations, policy support and market opportunities.',
+            'category' => 'market-analysis',
+            'read_time' => 8,
+            'featured' => true,
+        ),
+        array(
+            'title' => 'Breakthrough in Next-Generation Offshore Wind Blade Design',
+            'content' => 'Revolutionary composite materials are transforming wind turbine blade manufacturing, delivering unprecedented efficiency gains. The latest blade designs incorporate advanced carbon fiber composites and innovative aerodynamic profiles that increase energy capture by 15% while reducing maintenance requirements.
+
+These technological advances enable longer blade lengths without proportional weight increases, a crucial factor for offshore installations. New manufacturing techniques also improve blade durability and resistance to harsh marine environments, extending operational lifespans significantly.
+
+Leading manufacturers are collaborating with research institutions to further optimize blade performance, with promising developments in smart blade technology incorporating sensors and adaptive control systems.',
+            'excerpt' => 'Latest composite material technology increases wind blade efficiency by 15% while reducing maintenance costs.',
+            'category' => 'technology',
+            'read_time' => 6,
+            'featured' => false,
+        ),
+        array(
+            'title' => 'Asia-Pacific Wind Energy Investment Grows 30%',
+            'content' => 'Wind energy investment in the Asia-Pacific region reached new highs in the first half of 2024, with total commitments exceeding $45 billion. China and India lead this growth surge, accounting for over 60% of regional investments, while emerging markets like Vietnam and Philippines show accelerating development.
+
+Government policies supporting renewable energy transition drive this investment boom, with several countries implementing feed-in tariffs and renewable portfolio standards. Private sector participation has increased substantially, with major financial institutions and corporate buyers entering power purchase agreements.
+
+The supply chain infrastructure is rapidly expanding to support this growth, with new manufacturing facilities and specialized ports being developed across the region. This industrial development creates significant employment opportunities and contributes to economic growth.',
+            'excerpt' => 'Wind energy investment in the Asia-Pacific region reached new highs in H1 2024, with China and India leading market growth.',
+            'category' => 'market-analysis',
+            'read_time' => 7,
+            'featured' => false,
+        ),
+        array(
+            'title' => 'EU REPowerEU Plan Update',
+            'content' => 'The European Commission has announced ambitious updates to the REPowerEU initiative, setting a new target for wind energy to account for 42.5% of electricity generation by 2030. This represents a significant increase from previous targets and demonstrates Europe\'s commitment to energy independence and climate action.
+
+The plan includes streamlined permitting processes for new wind projects, with member states required to designate renewable energy acceleration areas. Financial support mechanisms are being enhanced, with dedicated funding for grid infrastructure upgrades and energy storage solutions.
+
+Industry stakeholders welcome these developments, though challenges remain in workforce development and supply chain capacity. The Commission is working closely with industry to address these bottlenecks and ensure smooth implementation of the accelerated deployment plan.',
+            'excerpt' => 'The European Commission announces new renewable energy targets with wind energy to account for 42.5% by 2030.',
+            'category' => 'policy',
+            'read_time' => 6,
+            'featured' => false,
+        ),
+        array(
+            'title' => 'AI-Driven Predictive Maintenance for Wind Turbines',
+            'content' => 'Artificial intelligence and machine learning are revolutionizing wind turbine maintenance strategies, with predictive systems achieving 95% accuracy in failure prediction. These advanced systems analyze vast amounts of operational data, identifying subtle patterns that indicate potential issues before they cause downtime.
+
+The technology combines sensor data, historical maintenance records, and environmental conditions to optimize maintenance schedules. This approach significantly reduces unexpected failures and extends component lifespans, delivering substantial cost savings for wind farm operators.
+
+Major industry players are investing heavily in AI capabilities, with several successful pilot programs demonstrating impressive results. The technology is expected to become standard across the industry within the next few years, fundamentally changing how wind farms are operated and maintained.',
+            'excerpt' => 'Machine learning technology improves turbine failure prediction accuracy to 95%, significantly reducing downtime.',
+            'category' => 'technology',
+            'read_time' => 8,
+            'featured' => false,
+        ),
+    );
+    
+    foreach ($sample_articles as $article) {
+        // Check if article already exists
+        $existing = get_page_by_title($article['title'], OBJECT, 'insight_articles');
+        if ($existing) continue;
+        
+        // Create article
+        $article_id = wp_insert_post(array(
+            'post_title' => $article['title'],
+            'post_content' => $article['content'],
+            'post_excerpt' => $article['excerpt'],
+            'post_status' => 'publish',
+            'post_type' => 'insight_articles',
+        ));
+        
+        if ($article_id) {
+            // Set category
+            $category_term = get_term_by('slug', $article['category'], 'insight_category');
+            if ($category_term) {
+                wp_set_object_terms($article_id, $category_term->term_id, 'insight_category');
+            }
+            
+            // Set meta fields
+            update_post_meta($article_id, '_read_time', $article['read_time']);
+            update_post_meta($article_id, '_author_name', 'VortexEco Team');
+            
+            if ($article['featured']) {
+                update_post_meta($article_id, '_featured_article', '1');
+            }
+        }
+    }
+}
+
+function vortexeco_fix_taxonomy_metabox() {
+    // 移除預設位置
+    remove_meta_box('product_categorydiv', 'vortex_products', 'side');
+    remove_meta_box('tagsdiv-product_brand', 'vortex_products', 'side');
+    
+    // 重新加入到正確位置
+    add_meta_box(
+        'product_categorydiv',
+        '產品分類 (Product Categories)',
+        'post_categories_meta_box',
+        'vortex_products',
+        'side',
+        'default',
+        array('taxonomy' => 'product_category')
+    );
+    
+    add_meta_box(
+        'tagsdiv-product_brand',
+        '品牌 (Brands)',
+        'post_tags_meta_box',
+        'vortex_products',
+        'side',
+        'default',
+        array('taxonomy' => 'product_brand')
+    );
+}
+add_action('add_meta_boxes', 'vortexeco_fix_taxonomy_metabox', 99);
+
+// 確保分類和品牌的 meta box 可以正常顯示
+function vortexeco_register_taxonomies_correctly() {
+    // 產品分類 - 像文章分類一樣
+    register_taxonomy('product_category', 'vortex_products', array(
+        'labels' => array(
+            'name' => '產品分類',
+            'singular_name' => '分類',
+            'all_items' => '所有分類',
+            'edit_item' => '編輯分類',
+            'add_new_item' => '新增分類',
+        ),
+        'hierarchical' => true,  // 重要：這會讓它像分類一樣顯示勾選框
+        'show_ui' => true,
+        'show_in_menu' => true,
+        'show_in_rest' => true,
+        'show_admin_column' => true,  // 在列表頁顯示這個欄位
+        'meta_box_cb' => 'post_categories_meta_box',  // 使用標準的分類選擇器
+        'rewrite' => array('slug' => 'product-category'),
+    ));
+    
+    // 產品品牌 - 像標籤一樣
+    register_taxonomy('product_brand', 'vortex_products', array(
+        'labels' => array(
+            'name' => '品牌',
+            'singular_name' => '品牌',
+            'all_items' => '所有品牌',
+            'edit_item' => '編輯品牌',
+            'add_new_item' => '新增品牌',
+        ),
+        'hierarchical' => false,  // 像標籤一樣
+        'show_ui' => true,
+        'show_in_menu' => true,
+        'show_in_rest' => true,
+        'show_admin_column' => true,
+        'meta_box_cb' => 'post_tags_meta_box',  // 使用標準的標籤選擇器
+        'rewrite' => array('slug' => 'brand'),
+    ));
+}
+// 把這個改成優先執行
+add_action('init', 'vortexeco_register_taxonomies_correctly', 5);
+
+// 一次性創建測試產品
+function vortexeco_create_test_product_once() {
+    // 檢查是否已經執行過
+    if (get_option('vortexeco_test_product_created') === 'yes') {
+        return;
+    }
+    
+    // 確保分類和品牌存在
+    $category = get_term_by('slug', 'turbine-parts', 'product_category');
+    if (!$category) {
+        $category_result = wp_insert_term('渦輪機組件', 'product_category', array('slug' => 'turbine-parts'));
+        $category = get_term($category_result['term_id'], 'product_category');
+    }
+    
+    $brand = get_term_by('slug', 'vestas', 'product_brand');
+    if (!$brand) {
+        $brand_result = wp_insert_term('Vestas', 'product_brand', array('slug' => 'vestas'));
+        $brand = get_term($brand_result['term_id'], 'product_brand');
+    }
+    
+    // 創建測試產品
+    $product_id = wp_insert_post(array(
+        'post_title' => '測試產品 - Vestas 渦輪機零件',
+        'post_content' => '這是一個測試產品。專業的 Vestas 風力發電機維修零件，確保設備最佳性能並延長渦輪機使用壽命。高品質組件，專為最大可靠性而設計。',
+        'post_excerpt' => '專業 Vestas 渦輪機維修和保養零件',
+        'post_status' => 'publish',
+        'post_type' => 'vortex_products'
+    ));
+    
+    if ($product_id && !is_wp_error($product_id)) {
+        // 設定分類和品牌
+        wp_set_object_terms($product_id, $category->term_id, 'product_category');
+        wp_set_object_terms($product_id, $brand->term_id, 'product_brand');
+        
+        // 設定自定義欄位
+        update_post_meta($product_id, '_product_icon', '⚙️');
+        update_post_meta($product_id, '_product_color_primary', '#1263A0');
+        update_post_meta($product_id, '_product_color_secondary', '#00A8E6');
+        update_post_meta($product_id, '_product_features', "維修零件\n維護支援\n原廠品質\n24/7 技術支援");
+        update_post_meta($product_id, '_product_price', '請洽詢報價');
+        update_post_meta($product_id, '_product_warranty', '24 個月');
+        update_post_meta($product_id, '_product_delivery_time', '2-4 週');
+        update_post_meta($product_id, '_product_certification', 'CE/ISO');
+        
+        // 標記為已執行
+        update_option('vortexeco_test_product_created', 'yes');
+        
+        // 顯示產品 ID（只會在後台看到）
+        if (is_admin()) {
+            add_action('admin_notices', function() use ($product_id) {
+                echo '<div class="notice notice-success"><p>';
+                echo '✅ 測試產品已創建！產品 ID: ' . $product_id;
+                echo '<br>請訪問：<a href="' . home_url('/product-detail/?product=' . $product_id) . '" target="_blank">';
+                echo home_url('/product-detail/?product=' . $product_id) . '</a>';
+                echo '</p></div>';
+            });
+        }
+    }
+}
+add_action('admin_init', 'vortexeco_create_test_product_once');
+
+// 如果要重新創建測試產品，執行這個
+// delete_option('vortexeco_test_product_created');
+
+function vortexeco_hide_custom_fields_metabox() {
+    // 在產品編輯頁面隱藏
+    remove_meta_box('postcustom', 'vortex_products', 'normal');
+    
+    // 在文章編輯頁面隱藏
+    remove_meta_box('postcustom', 'insight_articles', 'normal');
+    
+    // 在服務編輯頁面隱藏
+    remove_meta_box('postcustom', 'services', 'normal');
+}
+add_action('admin_menu', 'vortexeco_hide_custom_fields_metabox');
+
+// 一次性創建範例 Market Insights 文章
+function vortexeco_quick_create_sample_insights() {
+    // 檢查是否已經執行過
+    if (get_option('vortexeco_insights_created') === 'yes') {
+        return;
+    }
+    
+    // 確保分類存在
+    $categories = array(
+        'market-analysis' => '市場分析',
+        'technology' => '技術創新',
+        'policy' => '政策法規',
+        'industry-news' => '產業新聞'
+    );
+    
+    foreach ($categories as $slug => $name) {
+        if (!term_exists($name, 'insight_category')) {
+            wp_insert_term($name, 'insight_category', array('slug' => $slug));
+        }
+    }
+    
+    // 創建範例文章
+    $articles = array(
+        array(
+            'title' => '2024全球風能市場發展趨勢',
+            'content' => '2024年全球風能市場持續展現強勁增長，陸上和海上風電領域都取得了重大發展。亞太、歐洲和北美的主要市場正在引領這一擴張，這得益於支持性的政府政策和不斷下降的技術成本。
+
+主要亮點包括渦輪機技術的突破性創新，製造商推出了更大更高效的型號。預計到2030年，海上風電裝機容量將增加兩倍，浮動式風電技術為更深水域開闢了新的可能性。
+
+風能基礎設施投資已達到創紀錄水平，公共和私營部門都在向可再生能源項目投入大量資金。供應鏈正在不斷發展以支持這一增長，關鍵市場的本地製造能力正在擴大。',
+            'excerpt' => '深入分析全球風能產業最新發展動態，包括技術創新、政策支持和市場機遇。',
+            'category' => 'market-analysis',
+            'featured' => true,
+            'read_time' => 8,
+        ),
+        array(
+            'title' => '新一代海上風電葉片設計取得突破',
+            'content' => '革命性的複合材料正在改變風力發電機葉片製造，帶來前所未有的效率提升。最新的葉片設計結合了先進的碳纖維複合材料和創新的空氣動力學輪廓，使能量捕獲增加了15%，同時減少了維護需求。
+
+這些技術進步使得在不成比例增加重量的情況下可以實現更長的葉片長度，這對海上安裝至關重要。新的製造技術還提高了葉片的耐用性和對惡劣海洋環境的抵抗力，顯著延長了使用壽命。',
+            'excerpt' => '最新複合材料技術使風電葉片效率提高15%，同時降低維護成本。',
+            'category' => 'technology',
+            'featured' => false,
+            'read_time' => 6,
+        ),
+        array(
+            'title' => '亞太地區風能投資增長30%',
+            'content' => '2024年上半年，亞太地區風能投資達到新高，總投資額超過450億美元。中國和印度引領這一增長浪潮，佔區域投資的60%以上，而越南和菲律賓等新興市場也顯示出加速發展的勢頭。
+
+支持可再生能源轉型的政府政策推動了這一投資熱潮，多個國家實施了上網電價和可再生能源配額標準。私營部門參與度大幅增加，主要金融機構和企業買家簽訂了電力購買協議。',
+            'excerpt' => '亞太地區風能投資在2024年上半年達到新高，中國和印度引領市場增長。',
+            'category' => 'market-analysis',
+            'featured' => false,
+            'read_time' => 7,
+        ),
+    );
+    
+    $created_count = 0;
+    foreach ($articles as $article) {
+        // 檢查文章是否已存在
+        $existing = get_page_by_title($article['title'], OBJECT, 'insight_articles');
+        if ($existing) continue;
+        
+        // 創建文章
+        $article_id = wp_insert_post(array(
+            'post_title' => $article['title'],
+            'post_content' => $article['content'],
+            'post_excerpt' => $article['excerpt'],
+            'post_status' => 'publish',
+            'post_type' => 'insight_articles',
+        ));
+        
+        if ($article_id && !is_wp_error($article_id)) {
+            // 設定分類
+            $category_term = get_term_by('slug', $article['category'], 'insight_category');
+            if ($category_term) {
+                wp_set_object_terms($article_id, $category_term->term_id, 'insight_category');
+            }
+            
+            // 設定 meta 欄位
+            update_post_meta($article_id, '_read_time', $article['read_time']);
+            update_post_meta($article_id, '_author_name', 'VortexEco 團隊');
+            
+            if ($article['featured']) {
+                update_post_meta($article_id, '_featured_article', '1');
+            }
+            
+            $created_count++;
+        }
+    }
+    
+    // 標記為已執行
+    if ($created_count > 0) {
+        update_option('vortexeco_insights_created', 'yes');
+        
+        // 顯示通知
+        if (is_admin()) {
+            add_action('admin_notices', function() use ($created_count) {
+                echo '<div class="notice notice-success"><p>';
+                echo '✅ 已成功創建 ' . $created_count . ' 篇範例 Market Insights 文章！';
+                echo '<br>請訪問：<a href="' . home_url('/market-insights/') . '" target="_blank">查看文章列表</a>';
+                echo '</p></div>';
+            });
+        }
+    }
+}
+add_action('admin_init', 'vortexeco_quick_create_sample_insights');
+
+
+// 如果要重新創建，取消這行的註解並重新整理後台
+// delete_option('vortexeco_insights_created');
 ?>

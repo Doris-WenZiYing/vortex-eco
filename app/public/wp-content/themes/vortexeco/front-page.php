@@ -57,7 +57,7 @@ get_header(); ?>
                 Professional Wind Energy
                 <br>
                 <span style="
-                    background: linear-gradient(90deg, #00A8E6, #FFFFFF, #00FF88);
+                    background: linear-gradient(90deg, #FFFFFF);
                     -webkit-background-clip: text;
                     -webkit-text-fill-color: transparent;
                     background-clip: text;
