@@ -12,14 +12,14 @@ if (!defined('ABSPATH')) exit;
 function create_vortexeco_product_cpt() {
     register_post_type('vortex_products', array(
         'labels' => array(
-            'name'               => __('風電產品', 'vortex-eco'),
-            'singular_name'      => __('產品', 'vortex-eco'),
-            'add_new'            => __('新增產品', 'vortex-eco'),
-            'add_new_item'       => __('新增產品', 'vortex-eco'),
-            'edit_item'          => __('編輯產品', 'vortex-eco'),
-            'view_item'          => __('查看產品', 'vortex-eco'),
-            'search_items'       => __('搜尋產品', 'vortex-eco'),
-            'not_found'          => __('找不到產品', 'vortex-eco'),
+            'name'               => __('Products', 'vortex-eco'),
+            'singular_name'      => __('Product', 'vortex-eco'),
+            'add_new'            => __('Add Product', 'vortex-eco'),
+            'add_new_item'       => __('Add Product Item', 'vortex-eco'),
+            'edit_item'          => __('Edit Product', 'vortex-eco'),
+            'view_item'          => __('View Product', 'vortex-eco'),
+            'search_items'       => __('Serch Product', 'vortex-eco'),
+            'not_found'          => __('Not Found', 'vortex-eco'),
         ),
         'public'             => true,
         'has_archive'        => true,

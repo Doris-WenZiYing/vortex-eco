@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) exit;
 function create_insight_articles_cpt() {
     register_post_type('insight_articles', array(
         'labels' => array(
-            'name'               => __('市场洞察', 'vortex-eco'),
+            'name'               => __('Market Insights', 'vortex-eco'),
             'singular_name'      => __('洞察文章', 'vortex-eco'),
             'add_new'            => __('新增文章', 'vortex-eco'),
             'add_new_item'       => __('新增洞察文章', 'vortex-eco'),

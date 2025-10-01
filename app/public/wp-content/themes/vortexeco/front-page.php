@@ -10,7 +10,7 @@ get_header(); ?>
 <!-- Hero Section with Search -->
 <section id="hero" class="hero-section" style="
     min-height: 60vh;
-    background: linear-gradient(135deg, rgba(18, 99, 160, 0.85) 0%, rgba(15, 82, 135, 0.9) 80%),
+    background: linear-gradient(135deg, rgba(18, 99, 160, 0.85) 0%, rgba(15, 82, 135, 0.9) 10%),
                 url('<?php echo get_theme_mod('hero_background_image', get_template_directory_uri() . '/assets/images/LINE_ALBUM_2025.8.27_250827_8.jpg'); ?>');
     background-size: cover;
     background-position: center;
@@ -33,7 +33,7 @@ get_header(); ?>
         background: 
             radial-gradient(circle at 25% 75%, rgba(0, 168, 230, 0.4) 0%, transparent 0%),
             radial-gradient(circle at 75% 25%, rgba(18, 99, 160, 0.3) 0%, transparent 0%);
-        opacity: 0.8;
+        opacity: 0.1;
         animation: pulse 6s ease-in-out infinite alternate;
     "></div>
     

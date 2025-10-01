@@ -1,13 +1,13 @@
 <?php
 /**
- * Archive Template for Services
+ * Archive Template for Services - Fixed Version
  * 
  * @package VortexEco
  */
 
 get_header(); 
 
-// 獲取所有服務
+// Get services
 $services_query = new WP_Query(array(
     'post_type' => 'services',
     'posts_per_page' => -1,
@@ -17,174 +17,622 @@ $services_query = new WP_Query(array(
 ));
 ?>
 
-<!-- Services Header -->
-<section style="padding: 8rem 0 4rem; background: #FFFFFF; margin-top: 80px;">
-    <div class="container" style="max-width: 1000px; margin: 0 auto; padding: 0 2rem;">
-        <div style="text-align: center;">
-            <h1 style="font-size: 3rem; font-weight: 700; color: #1F2937; margin-bottom: 1.5rem; line-height: 1.2;">
-                專業服務
-            </h1>
-            <p style="font-size: 1.2rem; color: #6B7280; line-height: 1.8; max-width: 800px; margin: 0 auto;">
-                VORTEXECO 提供全面的風能項目管理服務，涵蓋從開發到運營的完整生命週期。
-            </p>
+<!-- 修复 Header 遮挡问题 -->
+<style>
+/* 强制覆盖任何可能的冲突 */
+.page-template-archive-services #main,
+.post-type-archive-services #main,
+body.archive #main {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+
+/* 确保内容从 header 下方开始 */
+.page-template-archive-services,
+.post-type-archive-services {
+    padding-top: 80px; /* 根据你的 header 实际高度调整 */
+}
+
+/* 如果 body 没有特定 class，直接针对这个页面 */
+body {
+    padding-top: 80px;
+}
+</style>
+
+<!-- Hero Slider -->
+<div class="slider-wrapper relative slider-1" id="slider-services" style="position: relative; width: 100%; overflow: hidden; background: #f0f0f0;">
+    <div class="slider slider-type-fade slider-nav-circle slider-nav-large slider-nav-light slider-style-normal"
+        data-flickity-options='{
+            "cellAlign": "center",
+            "imagesLoaded": true,
+            "lazyLoad": 1,
+            "wrapAround": true,
+            "autoPlay": 3000,
+            "prevNextButtons": true,
+            "pageDots": false,
+            "draggable": true
+        }'>
+        
+        <?php 
+        // Get slider images - 总共显示 3 张
+        for ($i = 1; $i <= 3; $i++): 
+            // 优先使用自定义器设置的图片
+            $slider_image = get_theme_mod("services_slider_image_$i");
+            
+            // 如果没有设置，使用默认图片
+            if (!$slider_image) {
+                $slider_image = get_template_directory_uri() . "/assets/images/slider-1.jpg";
+            }
+            
+            // 调试输出
+            echo '<!-- Slider ' . $i . ' 图片路径: ' . $slider_image . ' -->';
+        ?>
+        <div class="banner has-hover" style="width: 100%;">
+            <div class="banner-inner fill" style="position: relative; width: 100%; height: 100%;">
+                <div class="banner-bg fill" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+                    <div class="bg fill bg-fill" style="background-image: url('<?php echo esc_url($slider_image); ?>'); background-position: center center; background-size: cover; width: 100%; height: 100%; min-height: 400px;"></div>
+                </div>
+            </div>
         </div>
+        <?php endfor; ?>
     </div>
-</section>
+    
+    <!-- 如果 slider 不工作，显示这个备用内容 -->
+    <noscript>
+        <div style="background: url('<?php echo get_template_directory_uri(); ?>/assets/images/slider-1.jpg') center center / cover; height: 400px;"></div>
+    </noscript>
+</div>
 
-<!-- Services List -->
-<section style="padding: 4rem 0; background: #F9FAFB;">
-    <div class="container" style="max-width: 1000px; margin: 0 auto; padding: 0 2rem;">
+<!-- Slider Styles - 强制覆盖 -->
+<style>
+/* 强制显示 slider，覆盖任何隐藏样式 */
+#slider-services {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    z-index: 1 !important;
+    margin-top: 0 !important;
+    width: 100% !important;
+}
+
+/* Banner Sizing - 强制设置 */
+#slider-services .banner {
+    padding-top: 200px !important;
+    width: 100% !important;
+    display: block !important;
+    position: relative !important;
+}
+
+#slider-services .banner-inner {
+    position: relative !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+#slider-services .banner-bg {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+#slider-services .banner-bg .bg {
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 400px !important;
+}
+
+/* Responsive */
+@media (min-width:550px) {
+    #slider-services .banner {
+        padding-top: 300px !important;
+    }
+}
+
+@media (min-width:850px) {
+    #slider-services .banner {
+        padding-top: 500px !important;
+    }
+}
+
+/* Flickity 样式修复 */
+.slider {
+    width: 100% !important;
+}
+
+.slider .flickity-viewport {
+    width: 100% !important;
+}
+
+/* 如果 Flickity 没有加载，至少显示第一张图 */
+.slider:not(.flickity-enabled) .banner:first-child {
+    display: block !important;
+}
+
+.slider:not(.flickity-enabled) .banner:not(:first-child) {
+    display: none;
+}
+</style>
+
+<!-- Main Services Section -->
+<section class="section section-pd section-service" id="section_services">
+    <div class="section-content relative">
         
-        <?php if ($services_query->have_posts()): ?>
-            <?php 
-            $service_count = 0;
+        <?php if ($services_query->have_posts()): 
             while ($services_query->have_posts()): 
-                $services_query->the_post(); 
-                $service_count++;
-                $icon = get_post_meta(get_the_ID(), '_service_icon', true);
-                $features = get_post_meta(get_the_ID(), '_service_features', true);
-                $features_array = $features ? array_filter(explode("\n", $features)) : array();
-            ?>
-            
-            <!-- Service Card -->
-            <div style="background: #FFFFFF; border-radius: 8px; padding: 4rem 3rem; margin-bottom: 2rem; border: 1px solid #E5E7EB;">
-                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
-                    <?php if ($icon): ?>
-                    <span style="font-size: 2.5rem;"><?php echo esc_html($icon); ?></span>
-                    <?php endif; ?>
-                    <h2 style="font-size: 2rem; font-weight: 600; color: #1F2937; margin: 0;">
-                        <?php the_title(); ?>
-                    </h2>
-                </div>
+                $services_query->the_post();
                 
-                <p style="font-size: 1.1rem; color: #4B5563; line-height: 1.8; margin-bottom: 2rem;">
-                    <?php 
-                    if (has_excerpt()) {
-                        the_excerpt();
-                    } else {
-                        echo wp_trim_words(get_the_content(), 50);
-                    }
-                    ?>
-                </p>
+                // Get custom fields - 这些可以在后台编辑
+                $service_description = get_post_meta(get_the_ID(), '_service_description', true);
+                $service_bullets = get_post_meta(get_the_ID(), '_service_bullets', true);
+                $service_image = get_post_meta(get_the_ID(), '_service_image', true);
                 
-                <?php if (!empty($features_array)): ?>
-                <ul style="list-style: none; padding: 0; margin: 0; display: grid; gap: 1rem;">
-                    <?php foreach ($features_array as $feature): ?>
-                    <li style="padding-left: 1.5rem; position: relative; color: #4B5563; font-size: 1.05rem;">
-                        <span style="position: absolute; left: 0; color: #1263A0;">•</span>
-                        <?php echo esc_html(trim($feature)); ?>
-                    </li>
-                    <?php endforeach; ?>
-                </ul>
-                <?php endif; ?>
-            </div>
-            
-            <?php endwhile; wp_reset_postdata(); ?>
+                // Convert bullets to array
+                $bullets_array = $service_bullets ? array_filter(explode("\n", $service_bullets)) : array();
+                
+                // 如果没有自定义图片，使用默认图片
+                if (!$service_image && !has_post_thumbnail()) {
+                    $service_image = get_template_directory_uri() . '/assets/images/slider-1.jpg';
+                }
+        ?>
         
-        <?php else: ?>
-            <!-- 如果沒有服務，顯示預設內容 -->
-            <div style="background: #FFFFFF; border-radius: 8px; padding: 4rem 3rem; margin-bottom: 2rem; border: 1px solid #E5E7EB;">
-                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
-                    <span style="font-size: 2.5rem;">⚙</span>
-                    <h2 style="font-size: 2rem; font-weight: 600; color: #1F2937; margin: 0;">
-                        專案開發
-                    </h2>
+        <!-- Service Block -->
+        <div class="row row-large align-items-center">
+            
+            <!-- Left Column: Content -->
+            <div class="col medium-6 small-12 large-6">
+                <div class="col-inner">
+                    
+                    <!-- Title - 可在后台编辑 -->
+                    <div class="service-title-wrapper">
+                        <h3 class="service-title">
+                            <?php the_title(); ?>
+                        </h3>
+                    </div>
+                    
+                    <!-- Description - 可在后台编辑 -->
+                    <div class="service-description">
+                        <?php if ($service_description): ?>
+                            <p><strong>VORTEXECO</strong> <?php echo esc_html($service_description); ?></p>
+                        <?php else: ?>
+                            <p><strong>VORTEXECO</strong> <?php echo wp_trim_words(get_the_content(), 30); ?></p>
+                        <?php endif; ?>
+                        
+                        <!-- Bullets - 可在后台编辑 -->
+                        <?php if (!empty($bullets_array)): ?>
+                        <ul class="service-bullets">
+                            <?php foreach ($bullets_array as $bullet): ?>
+                            <li><?php echo esc_html(trim($bullet)); ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                        <?php endif; ?>
+                    </div>
+                    
                 </div>
-                <p style="font-size: 1.1rem; color: #4B5563; line-height: 1.8; margin-bottom: 2rem;">
-                    從初步場址評估到最終項目可行性研究，我們引導您的風能項目順利完成每個開發階段。
-                </p>
-                <ul style="list-style: none; padding: 0; margin: 0; display: grid; gap: 1rem;">
-                    <li style="padding-left: 1.5rem; position: relative; color: #4B5563; font-size: 1.05rem;">
-                        <span style="position: absolute; left: 0; color: #1263A0;">•</span>
-                        場址評估和風資源評估
-                    </li>
-                    <li style="padding-left: 1.5rem; position: relative; color: #4B5563; font-size: 1.05rem;">
-                        <span style="position: absolute; left: 0; color: #1263A0;">•</span>
-                        可行性研究和財務建模
-                    </li>
-                    <li style="padding-left: 1.5rem; position: relative; color: #4B5563; font-size: 1.05rem;">
-                        <span style="position: absolute; left: 0; color: #1263A0;">•</span>
-                        許可證申請和法規合規
-                    </li>
-                </ul>
             </div>
-
-            <div style="background: #FFFFFF; border-radius: 8px; padding: 4rem 3rem; margin-bottom: 2rem; border: 1px solid #E5E7EB;">
-                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
-                    <span style="font-size: 2.5rem;">🔧</span>
-                    <h2 style="font-size: 2rem; font-weight: 600; color: #1F2937; margin: 0;">
-                        工程與建設
-                    </h2>
+            
+            <!-- Right Column: Image - 可在后台上传 -->
+            <div class="col medium-6 small-12 large-6">
+                <div class="col-inner">
+                    <div class="service-image-wrapper">
+                        <div class="img has-hover">
+                            <div class="img-inner image-cover dark">
+                                <?php if ($service_image): ?>
+                                    <img src="<?php echo esc_url($service_image); ?>" alt="<?php the_title_attribute(); ?>" loading="lazy">
+                                <?php elseif (has_post_thumbnail()): ?>
+                                    <?php the_post_thumbnail('large'); ?>
+                                <?php else: ?>
+                                    <img src="<?php echo get_template_directory_uri(); ?>/assets/images/slider-1.jpg" alt="<?php the_title_attribute(); ?>" loading="lazy">
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <p style="font-size: 1.1rem; color: #4B5563; line-height: 1.8; margin-bottom: 2rem;">
-                    我們經驗豐富的工程團隊提供全面的 EPCC 服務，確保整個建設過程的技術卓越和法規合規。
-                </p>
-                <ul style="list-style: none; padding: 0; margin: 0; display: grid; gap: 1rem;">
-                    <li style="padding-left: 1.5rem; position: relative; color: #4B5563; font-size: 1.05rem;">
-                        <span style="position: absolute; left: 0; color: #1263A0;">•</span>
-                        詳細工程設計
-                    </li>
-                    <li style="padding-left: 1.5rem; position: relative; color: #4B5563; font-size: 1.05rem;">
-                        <span style="position: absolute; left: 0; color: #1263A0;">•</span>
-                        採購和供應鏈管理
-                    </li>
-                    <li style="padding-left: 1.5rem; position: relative; color: #4B5563; font-size: 1.05rem;">
-                        <span style="position: absolute; left: 0; color: #1263A0;">•</span>
-                        施工監督和質量保證
-                    </li>
-                </ul>
             </div>
-
-            <div style="background: #FFFFFF; border-radius: 8px; padding: 4rem 3rem; border: 1px solid #E5E7EB;">
-                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
-                    <span style="font-size: 2.5rem;">⚡</span>
-                    <h2 style="font-size: 2rem; font-weight: 600; color: #1F2937; margin: 0;">
-                        營運與維護
-                    </h2>
+            
+        </div>
+        
+        <!-- Divider -->
+        <div class="row row-collapse row-div">
+            <div class="col small-12 large-12">
+                <div class="col-inner">
+                    <div class="is-divider divider clearfix" style="max-width:100%; height:1px; background-color:rgb(218, 221, 228);"></div>
                 </div>
-                <p style="font-size: 1.1rem; color: #4B5563; line-height: 1.8; margin-bottom: 2rem;">
-                    通過我們全面的 O&M 解決方案，最大化資產性能和運行時間。
-                </p>
-                <ul style="list-style: none; padding: 0; margin: 0; display: grid; gap: 1rem;">
-                    <li style="padding-left: 1.5rem; position: relative; color: #4B5563; font-size: 1.05rem;">
-                        <span style="position: absolute; left: 0; color: #1263A0;">•</span>
-                        預防性和糾正性維護
-                    </li>
-                    <li style="padding-left: 1.5rem; position: relative; color: #4B5563; font-size: 1.05rem;">
-                        <span style="position: absolute; left: 0; color: #1263A0;">•</span>
-                        狀態監測和診斷
-                    </li>
-                    <li style="padding-left: 1.5rem; position: relative; color: #4B5563; font-size: 1.05rem;">
-                        <span style="position: absolute; left: 0; color: #1263A0;">•</span>
-                        性能優化和升級
-                    </li>
-                </ul>
             </div>
-        <?php endif; ?>
-
+        </div>
+        
+        <?php 
+            endwhile;
+            wp_reset_postdata();
+        else: 
+            // 如果没有服务，显示默认内容作为范本
+            $default_services = array(
+                array(
+                    'title' => 'Project Management',
+                    'description' => 'is a specialist in managing projects in the wind energy sector. Our one stop service covers full cycle of a project from project financing, feasibility studies, technical specifications, contract negotiation, detailed engineering, construction supervision, installation, commissioning and operation.',
+                    'bullets' => array(
+                        'Offshore Wind Farms',
+                        'Onshore Wind Projects', 
+                        'Wind Turbine Installation',
+                        'Project Financing',
+                        'Feasibility Studies'
+                    )
+                ),
+                array(
+                    'title' => 'Construction Management',
+                    'description' => 'team works closely with clients and contractors to understand requirements and provide integrated solutions. We identify the right expertise for each project and execute in a cost-effective, timely and safe manner.',
+                    'bullets' => array(
+                        'Site Supervision',
+                        'Quality Control',
+                        'Safety Management',
+                        'Schedule Management',
+                        'Cost Control'
+                    )
+                ),
+                array(
+                    'title' => 'EPCC',
+                    'description' => 'has the capability to provide EPCC service for new builds and upgrades. We assist clients in project financing, contractor selection, and full project management from Engineering to Commissioning.',
+                    'bullets' => array(
+                        'Engineering Design',
+                        'Procurement',
+                        'Construction',
+                        'Commissioning',
+                        'Hook-up Services'
+                    )
+                ),
+                array(
+                    'title' => 'Asset Management',
+                    'description' => 'solution ensures that clients\' assets are well preserved, maintained and operated. The value of assets depends on quality management.',
+                    'bullets' => array(
+                        'Asset Valuation',
+                        'Performance Monitoring',
+                        'Maintenance Planning',
+                        'Life Extension Studies',
+                        'Condition Assessments'
+                    )
+                ),
+                array(
+                    'title' => 'Consultancy',
+                    'description' => 'qualified assessors provide independent third-party assessments. We review compliance with technical specifications, standards, regulations and industry best practices.',
+                    'bullets' => array(
+                        'Technical Due Diligence',
+                        'Site Audits',
+                        'Risk Assessment',
+                        'Expert Witness Services',
+                        'Technical Reviews'
+                    )
+                )
+            );
+            
+            foreach ($default_services as $service):
+        ?>
+        
+        <!-- 默认服务内容 -->
+        <div class="row row-large align-items-center">
+            <div class="col medium-6 small-12 large-6">
+                <div class="col-inner">
+                    <div class="service-title-wrapper">
+                        <h3 class="service-title">
+                            <?php echo esc_html($service['title']); ?>
+                        </h3>
+                    </div>
+                    <div class="service-description">
+                        <p><strong>VORTEXECO</strong> <?php echo esc_html($service['description']); ?></p>
+                        <?php if (!empty($service['bullets'])): ?>
+                        <ul class="service-bullets">
+                            <?php foreach ($service['bullets'] as $bullet): ?>
+                            <li><?php echo esc_html($bullet); ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+            <div class="col medium-6 small-12 large-6">
+                <div class="col-inner">
+                    <div class="service-image-wrapper">
+                        <div class="img has-hover">
+                            <div class="img-inner image-cover dark">
+                                <img src="<?php echo get_template_directory_uri(); ?>/assets/images/slider-1.jpg" 
+                                     alt="<?php echo esc_attr($service['title']); ?>" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row row-collapse row-div">
+            <div class="col small-12 large-12">
+                <div class="col-inner">
+                    <div class="is-divider divider clearfix" style="max-width:100%; height:1px; background-color:rgb(218, 221, 228);"></div>
+                </div>
+            </div>
+        </div>
+        
+        <?php 
+            endforeach;
+        endif; ?>
+        
+        <!-- Accreditation Section -->
+        <div class="container section-title-container" style="margin-bottom: 30px; margin-top: 40px;">
+            <h2 class="section-title section-title-normal">
+                <span class="section-title-main" style="font-size:70%; color:rgb(29, 46, 91);">
+                    Accreditation and Memberships
+                </span>
+            </h2>
+        </div>
+        
+        <!-- Certification Logos - 全部在一行 -->
+        <div class="row align-middle certifications-row">
+            <div class="col small-12">
+                <div class="certifications-container">
+                    <?php 
+                    // Get certification images from customizer or use default
+                    for ($i = 1; $i <= 5; $i++): 
+                        $cert_image = get_theme_mod("cert_image_$i");
+                        if (!$cert_image) {
+                            $cert_image = get_template_directory_uri() . "/assets/images/slider-1.jpg";
+                        }
+                    ?>
+                    <div class="cert-item">
+                        <div class="cert-image">
+                            <img src="<?php echo esc_url($cert_image); ?>" 
+                                 alt="Certification <?php echo $i; ?>" 
+                                 loading="lazy">
+                        </div>
+                    </div>
+                    <?php endfor; ?>
+                </div>
+            </div>
+        </div>
+        
     </div>
 </section>
 
-<!-- CTA Section -->
-<section style="padding: 6rem 0; background: #FFFFFF; text-align: center;">
-    <div class="container" style="max-width: 800px; margin: 0 auto; padding: 0 2rem;">
-        <h2 style="font-size: 2.5rem; font-weight: 600; color: #1F2937; margin-bottom: 1.5rem;">
-            準備好討論您的項目了嗎？
-        </h2>
-        <p style="font-size: 1.2rem; color: #6B7280; margin-bottom: 3rem; line-height: 1.8;">
-            聯繫我們的團隊，了解我們如何支持您的風能目標。
-        </p>
-        <button onclick="window.location.href='<?php echo home_url('/contact-us/'); ?>'" style="
-            background: #1263A0;
-            color: white;
-            border: none;
-            padding: 1.2rem 3rem;
-            border-radius: 6px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-        ">立即聯繫</button>
-    </div>
-</section>
+<!-- Styling -->
+<style>
+/* ========================================
+   主要布局调整
+   ======================================== */
+
+/* Section Styling */
+#section_services {
+    padding-top: 30px;
+    padding-bottom: 30px;
+    background: #FFFFFF;
+}
+
+/* Row Styling - 确保对齐 */
+.row.row-large {
+    max-width: 1530px;
+    margin: 0 auto 60px;
+}
+
+.row.row-large.align-items-center {
+    display: flex;
+    align-items: center;
+}
+
+/* ========================================
+   标题样式 - 更大更突出
+   ======================================== */
+
+.service-title-wrapper {
+    margin-bottom: 20px;
+}
+
+.service-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: rgb(29, 46, 91);
+    line-height: 1.3;
+    margin: 0;
+    padding: 0;
+}
+
+@media (max-width: 849px) {
+    .service-title {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 549px) {
+    .service-title {
+        font-size: 1.5rem;
+    }
+}
+
+/* ========================================
+   内容样式
+   ======================================== */
+
+.service-description {
+    color: rgb(61, 77, 120);
+    line-height: 1.8;
+}
+
+.service-description p {
+    margin-bottom: 15px;
+    font-size: 1rem;
+}
+
+.service-description strong {
+    color: rgb(29, 46, 91);
+}
+
+/* Bullet Points */
+.service-bullets {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin-top: 15px;
+}
+
+.service-bullets li {
+    margin-bottom: 10px;
+    color: rgb(61, 77, 120);
+    line-height: 1.6;
+}
+
+/* ========================================
+   图片样式 - 确保在右边显示且可见
+   ======================================== */
+
+.service-image-wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 0;
+}
+
+.service-image-wrapper .img {
+    display: block !important;
+    width: 100% !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.service-image-wrapper .img-inner {
+    position: relative !important;
+    overflow: hidden;
+    border-radius: 8px;
+    padding-top: 65% !important; /* 维持长宽比 */
+    background: #f0f0f0; /* 备用背景色，如果图片加载失败会显示 */
+}
+
+.service-image-wrapper .img-inner img {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+}
+
+/* 确保 .img-inner.image-cover 正常工作 */
+.img-inner.image-cover {
+    position: relative !important;
+    overflow: hidden;
+    border-radius: 8px;
+    padding-top: 65% !important;
+    background: #f0f0f0;
+}
+
+.img-inner.image-cover img,
+.img-inner.dark img {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+}
+
+/* ========================================
+   分隔线
+   ======================================== */
+
+.row-div {
+    margin: 40px 0;
+}
+
+.is-divider {
+    height: 1px;
+    background-color: rgb(218, 221, 228);
+}
+
+/* ========================================
+   认证标志区域
+   ======================================== */
+
+.certifications-row {
+    max-width: 1530px;
+    margin: 0 auto;
+}
+
+.certifications-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    padding: 20px 0;
+}
+
+.cert-item {
+    flex: 0 0 auto;
+    max-width: 180px;
+}
+
+.cert-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cert-image img {
+    max-width: 100%;
+    height: auto;
+    max-height: 80px;
+    width: auto;
+    object-fit: contain;
+}
+
+/* ========================================
+   响应式布局
+   ======================================== */
+
+@media (max-width: 849px) {
+    .row.row-large {
+        margin-bottom: 40px;
+    }
+    
+    .row.row-large.align-items-center {
+        flex-direction: column;
+    }
+    
+    .row.row-large .col {
+        width: 100%;
+    }
+    
+    .service-image-wrapper {
+        margin-top: 30px;
+    }
+    
+    .certifications-container {
+        gap: 30px;
+    }
+    
+    .cert-item {
+        max-width: 140px;
+    }
+    
+    .cert-image img {
+        max-height: 60px;
+    }
+}
+
+@media (max-width: 549px) {
+    .certifications-container {
+        gap: 20px;
+        justify-content: space-around;
+    }
+    
+    .cert-item {
+        max-width: 100px;
+        flex: 0 0 calc(50% - 10px);
+    }
+    
+    .cert-image img {
+        max-height: 50px;
+    }
+}
+</style>
 
 <?php get_footer(); ?>
