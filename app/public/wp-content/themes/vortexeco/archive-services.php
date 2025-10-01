@@ -1,6 +1,6 @@
 <?php
 /**
- * Archive Template for Services - Fixed Version
+ * Archive Template for Services - Updated Version
  * 
  * @package VortexEco
  */
@@ -15,149 +15,20 @@ $services_query = new WP_Query(array(
     'orderby' => 'menu_order',
     'order' => 'ASC'
 ));
+
+// Get hero image from customizer
+$hero_image = get_theme_mod('services_hero_image', get_template_directory_uri() . '/assets/images/LINE_ALBUM_2025.8.27_250827_8.jpg');
 ?>
 
-<!-- 修复 Header 遮挡问题 -->
-<style>
-/* 强制覆盖任何可能的冲突 */
-.page-template-archive-services #main,
-.post-type-archive-services #main,
-body.archive #main {
-    padding-top: 0 !important;
-    margin-top: 0 !important;
-}
-
-/* 确保内容从 header 下方开始 */
-.page-template-archive-services,
-.post-type-archive-services {
-    padding-top: 80px; /* 根据你的 header 实际高度调整 */
-}
-
-/* 如果 body 没有特定 class，直接针对这个页面 */
-body {
-    padding-top: 80px;
-}
-</style>
-
-<!-- Hero Slider -->
-<div class="slider-wrapper relative slider-1" id="slider-services" style="position: relative; width: 100%; overflow: hidden; background: #f0f0f0;">
-    <div class="slider slider-type-fade slider-nav-circle slider-nav-large slider-nav-light slider-style-normal"
-        data-flickity-options='{
-            "cellAlign": "center",
-            "imagesLoaded": true,
-            "lazyLoad": 1,
-            "wrapAround": true,
-            "autoPlay": 3000,
-            "prevNextButtons": true,
-            "pageDots": false,
-            "draggable": true
-        }'>
-        
-        <?php 
-        // Get slider images - 总共显示 3 张
-        for ($i = 1; $i <= 3; $i++): 
-            // 优先使用自定义器设置的图片
-            $slider_image = get_theme_mod("services_slider_image_$i");
-            
-            // 如果没有设置，使用默认图片
-            if (!$slider_image) {
-                $slider_image = get_template_directory_uri() . "/assets/images/slider-1.jpg";
-            }
-            
-            // 调试输出
-            echo '<!-- Slider ' . $i . ' 图片路径: ' . $slider_image . ' -->';
-        ?>
-        <div class="banner has-hover" style="width: 100%;">
-            <div class="banner-inner fill" style="position: relative; width: 100%; height: 100%;">
-                <div class="banner-bg fill" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
-                    <div class="bg fill bg-fill" style="background-image: url('<?php echo esc_url($slider_image); ?>'); background-position: center center; background-size: cover; width: 100%; height: 100%; min-height: 400px;"></div>
-                </div>
-            </div>
-        </div>
-        <?php endfor; ?>
-    </div>
-    
-    <!-- 如果 slider 不工作，显示这个备用内容 -->
-    <noscript>
-        <div style="background: url('<?php echo get_template_directory_uri(); ?>/assets/images/slider-1.jpg') center center / cover; height: 400px;"></div>
-    </noscript>
+<!-- Hero Section -->
+<div class="hero-section" style="
+    width: 100%;
+    height: 400px;
+    background: url('<?php echo esc_url($hero_image); ?>') center/cover;
+    margin-top: 80px;
+    position: relative;
+">
 </div>
-
-<!-- Slider Styles - 强制覆盖 -->
-<style>
-/* 强制显示 slider，覆盖任何隐藏样式 */
-#slider-services {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    position: relative !important;
-    z-index: 1 !important;
-    margin-top: 0 !important;
-    width: 100% !important;
-}
-
-/* Banner Sizing - 强制设置 */
-#slider-services .banner {
-    padding-top: 200px !important;
-    width: 100% !important;
-    display: block !important;
-    position: relative !important;
-}
-
-#slider-services .banner-inner {
-    position: relative !important;
-    width: 100% !important;
-    height: 100% !important;
-}
-
-#slider-services .banner-bg {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-}
-
-#slider-services .banner-bg .bg {
-    background-size: cover !important;
-    background-position: center center !important;
-    background-repeat: no-repeat !important;
-    width: 100% !important;
-    height: 100% !important;
-    min-height: 400px !important;
-}
-
-/* Responsive */
-@media (min-width:550px) {
-    #slider-services .banner {
-        padding-top: 300px !important;
-    }
-}
-
-@media (min-width:850px) {
-    #slider-services .banner {
-        padding-top: 500px !important;
-    }
-}
-
-/* Flickity 样式修复 */
-.slider {
-    width: 100% !important;
-}
-
-.slider .flickity-viewport {
-    width: 100% !important;
-}
-
-/* 如果 Flickity 没有加载，至少显示第一张图 */
-.slider:not(.flickity-enabled) .banner:first-child {
-    display: block !important;
-}
-
-.slider:not(.flickity-enabled) .banner:not(:first-child) {
-    display: none;
-}
-</style>
 
 <!-- Main Services Section -->
 <section class="section section-pd section-service" id="section_services">
@@ -167,7 +38,7 @@ body {
             while ($services_query->have_posts()): 
                 $services_query->the_post();
                 
-                // Get custom fields - 这些可以在后台编辑
+                // Get custom fields
                 $service_description = get_post_meta(get_the_ID(), '_service_description', true);
                 $service_bullets = get_post_meta(get_the_ID(), '_service_bullets', true);
                 $service_image = get_post_meta(get_the_ID(), '_service_image', true);
@@ -175,9 +46,14 @@ body {
                 // Convert bullets to array
                 $bullets_array = $service_bullets ? array_filter(explode("\n", $service_bullets)) : array();
                 
-                // 如果没有自定义图片，使用默认图片
+                // Use slider-1.jpg as default if no custom image
                 if (!$service_image && !has_post_thumbnail()) {
                     $service_image = get_template_directory_uri() . '/assets/images/slider-1.jpg';
+                }
+                
+                // Get featured image if available
+                if (!$service_image && has_post_thumbnail()) {
+                    $service_image = get_the_post_thumbnail_url(get_the_ID(), 'large');
                 }
         ?>
         
@@ -188,14 +64,14 @@ body {
             <div class="col medium-6 small-12 large-6">
                 <div class="col-inner">
                     
-                    <!-- Title - 可在后台编辑 -->
+                    <!-- Title -->
                     <div class="service-title-wrapper">
                         <h3 class="service-title">
                             <?php the_title(); ?>
                         </h3>
                     </div>
                     
-                    <!-- Description - 可在后台编辑 -->
+                    <!-- Description -->
                     <div class="service-description">
                         <?php if ($service_description): ?>
                             <p><strong>VORTEXECO</strong> <?php echo esc_html($service_description); ?></p>
@@ -203,7 +79,7 @@ body {
                             <p><strong>VORTEXECO</strong> <?php echo wp_trim_words(get_the_content(), 30); ?></p>
                         <?php endif; ?>
                         
-                        <!-- Bullets - 可在后台编辑 -->
+                        <!-- Bullets -->
                         <?php if (!empty($bullets_array)): ?>
                         <ul class="service-bullets">
                             <?php foreach ($bullets_array as $bullet): ?>
@@ -216,19 +92,13 @@ body {
                 </div>
             </div>
             
-            <!-- Right Column: Image - 可在后台上传 -->
+            <!-- Right Column: Image -->
             <div class="col medium-6 small-12 large-6">
                 <div class="col-inner">
                     <div class="service-image-wrapper">
                         <div class="img has-hover">
-                            <div class="img-inner image-cover dark">
-                                <?php if ($service_image): ?>
-                                    <img src="<?php echo esc_url($service_image); ?>" alt="<?php the_title_attribute(); ?>" loading="lazy">
-                                <?php elseif (has_post_thumbnail()): ?>
-                                    <?php the_post_thumbnail('large'); ?>
-                                <?php else: ?>
-                                    <img src="<?php echo get_template_directory_uri(); ?>/assets/images/slider-1.jpg" alt="<?php the_title_attribute(); ?>" loading="lazy">
-                                <?php endif; ?>
+                            <div class="img-inner image-cover">
+                                <img src="<?php echo esc_url($service_image); ?>" alt="<?php the_title_attribute(); ?>" loading="lazy" />
                             </div>
                         </div>
                     </div>
@@ -250,7 +120,7 @@ body {
             endwhile;
             wp_reset_postdata();
         else: 
-            // 如果没有服务，显示默认内容作为范本
+            // Default services content if no services exist
             $default_services = array(
                 array(
                     'title' => 'Project Management',
@@ -312,7 +182,6 @@ body {
             foreach ($default_services as $service):
         ?>
         
-        <!-- 默认服务内容 -->
         <div class="row row-large align-items-center">
             <div class="col medium-6 small-12 large-6">
                 <div class="col-inner">
@@ -337,9 +206,9 @@ body {
                 <div class="col-inner">
                     <div class="service-image-wrapper">
                         <div class="img has-hover">
-                            <div class="img-inner image-cover dark">
+                            <div class="img-inner image-cover">
                                 <img src="<?php echo get_template_directory_uri(); ?>/assets/images/slider-1.jpg" 
-                                     alt="<?php echo esc_attr($service['title']); ?>" loading="lazy">
+                                     alt="<?php echo esc_attr($service['title']); ?>" loading="lazy" />
                             </div>
                         </div>
                     </div>
@@ -360,20 +229,19 @@ body {
         endif; ?>
         
         <!-- Accreditation Section -->
-        <div class="container section-title-container" style="margin-bottom: 30px; margin-top: 40px;">
-            <h2 class="section-title section-title-normal">
+        <div class="container section-title-container" style="margin-bottom: 30px; margin-top: 40px; max-width: 1530px; margin-left: auto; margin-right: auto;">
+            <h2 class="section-title section-title-normal" style="text-align: left;">
                 <span class="section-title-main" style="font-size:70%; color:rgb(29, 46, 91);">
                     Accreditation and Memberships
                 </span>
             </h2>
         </div>
         
-        <!-- Certification Logos - 全部在一行 -->
-        <div class="row align-middle certifications-row">
+        <!-- Certification Logos -->
+        <div class="row align-middle certifications-row" style="max-width: 1530px; margin-left: auto; margin-right: auto;">
             <div class="col small-12">
                 <div class="certifications-container">
                     <?php 
-                    // Get certification images from customizer or use default
                     for ($i = 1; $i <= 5; $i++): 
                         $cert_image = get_theme_mod("cert_image_$i");
                         if (!$cert_image) {
@@ -397,9 +265,12 @@ body {
 
 <!-- Styling -->
 <style>
-/* ========================================
-   主要布局调整
-   ======================================== */
+/* Hero Section */
+.hero-section {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
 
 /* Section Styling */
 #section_services {
@@ -408,7 +279,7 @@ body {
     background: #FFFFFF;
 }
 
-/* Row Styling - 确保对齐 */
+/* Row Styling */
 .row.row-large {
     max-width: 1530px;
     margin: 0 auto 60px;
@@ -419,10 +290,7 @@ body {
     align-items: center;
 }
 
-/* ========================================
-   标题样式 - 更大更突出
-   ======================================== */
-
+/* Title Styling */
 .service-title-wrapper {
     margin-bottom: 20px;
 }
@@ -448,10 +316,7 @@ body {
     }
 }
 
-/* ========================================
-   内容样式
-   ======================================== */
-
+/* Content Styling */
 .service-description {
     color: rgb(61, 77, 120);
     line-height: 1.8;
@@ -479,10 +344,7 @@ body {
     line-height: 1.6;
 }
 
-/* ========================================
-   图片样式 - 确保在右边显示且可见
-   ======================================== */
-
+/* Image Styling */
 .service-image-wrapper {
     position: relative;
     width: 100%;
@@ -500,8 +362,8 @@ body {
     position: relative !important;
     overflow: hidden;
     border-radius: 8px;
-    padding-top: 65% !important; /* 维持长宽比 */
-    background: #f0f0f0; /* 备用背景色，如果图片加载失败会显示 */
+    padding-top: 65% !important;
+    background: #f0f0f0;
 }
 
 .service-image-wrapper .img-inner img {
@@ -514,7 +376,6 @@ body {
     display: block !important;
 }
 
-/* 确保 .img-inner.image-cover 正常工作 */
 .img-inner.image-cover {
     position: relative !important;
     overflow: hidden;
@@ -523,8 +384,7 @@ body {
     background: #f0f0f0;
 }
 
-.img-inner.image-cover img,
-.img-inner.dark img {
+.img-inner.image-cover img {
     position: absolute !important;
     top: 0 !important;
     left: 0 !important;
@@ -534,10 +394,7 @@ body {
     display: block !important;
 }
 
-/* ========================================
-   分隔线
-   ======================================== */
-
+/* Divider */
 .row-div {
     margin: 40px 0;
 }
@@ -547,10 +404,7 @@ body {
     background-color: rgb(218, 221, 228);
 }
 
-/* ========================================
-   认证标志区域
-   ======================================== */
-
+/* Certifications */
 .certifications-row {
     max-width: 1530px;
     margin: 0 auto;
@@ -584,10 +438,7 @@ body {
     object-fit: contain;
 }
 
-/* ========================================
-   响应式布局
-   ======================================== */
-
+/* Responsive Layout */
 @media (max-width: 849px) {
     .row.row-large {
         margin-bottom: 40px;

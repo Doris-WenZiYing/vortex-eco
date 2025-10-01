@@ -10,7 +10,7 @@ get_header(); ?>
 <!-- Hero Section with Search -->
 <section id="hero" class="hero-section" style="
     min-height: 60vh;
-    background: linear-gradient(135deg, rgba(18, 99, 160, 0.85) 0%, rgba(15, 82, 135, 0.9) 10%),
+    background: linear-gradient(135deg, rgba(18, 99, 160, 0.4) 0%, rgba(15, 82, 135, 0.5) 100%),
                 url('<?php echo get_theme_mod('hero_background_image', get_template_directory_uri() . '/assets/images/LINE_ALBUM_2025.8.27_250827_8.jpg'); ?>');
     background-size: cover;
     background-position: center;
@@ -31,18 +31,18 @@ get_header(); ?>
         right: 0;
         bottom: 0;
         background: 
-            radial-gradient(circle at 25% 75%, rgba(0, 168, 230, 0.4) 0%, transparent 0%),
-            radial-gradient(circle at 75% 25%, rgba(18, 99, 160, 0.3) 0%, transparent 0%);
+            radial-gradient(circle at 25% 75%, rgba(0, 168, 230, 0.2) 0%, transparent 50%),
+            radial-gradient(circle at 75% 25%, rgba(18, 99, 160, 0.15) 0%, transparent 50%);
         opacity: 0.1;
         animation: pulse 6s ease-in-out infinite alternate;
     "></div>
     
-    <div class="container" style="position: relative; z-index: 3;">
+    <div class="container" style="position: relative; z-index: 3; text-align: center;">
         <!-- Main Hero Content -->
         <div class="hero-content" style="
             max-width: 900px;
             color: white;
-            margin-bottom: 0rem;
+            margin: 0 auto 0;
         ">
             <!-- Main Title -->
             <h1 style="
@@ -76,11 +76,30 @@ get_header(); ?>
                 color: rgba(255, 255, 255, 0.95);
                 font-weight: 400;
                 max-width: 750px;
+                margin-left: auto;
+                margin-right: auto;
             ">
                 VORTEXECO SOLUTIONS brings together wind industry experts across materials, engineering, operations and maintenance. We provide comprehensive consulting services to reduce risks, improve efficiency, and advance sustainable offshore wind energy development.
             </p>
+            
+        </div>
     </div>
 </section>
+
+<script>
+function performHeroSearch() {
+    const query = document.getElementById('heroSearch').value.trim();
+    if (query) {
+        window.location.href = '<?php echo home_url('/products/'); ?>?s=' + encodeURIComponent(query);
+    }
+}
+
+document.getElementById('heroSearch').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        performHeroSearch();
+    }
+});
+</script>
 
 <!-- Company Overview Section -->
 <section id="about" class="section" style="
@@ -658,8 +677,6 @@ get_header(); ?>
         </div>
     </div>
 </section>
-    
-</section>
 
 <!-- CSS Animations and Responsive Styles -->
 <style>
@@ -786,26 +803,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-    
-    // Search functionality
-    const searchInput = document.querySelector('input[placeholder*="Search"]');
-    const searchButton = document.querySelector('button');
-    
-    if (searchInput && searchButton) {
-        searchButton.addEventListener('click', function() {
-            const query = searchInput.value.trim();
-            if (query) {
-                // Redirect to search results page or implement search logic
-                window.location.href = `/search?q=${encodeURIComponent(query)}`;
-            }
-        });
-        
-        searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                searchButton.click();
-            }
-        });
-    }
     
     // Form validation and submission
     const contactForm = document.querySelector('form');

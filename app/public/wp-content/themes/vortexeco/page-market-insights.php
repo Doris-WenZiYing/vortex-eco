@@ -1,86 +1,40 @@
 <?php
 /**
- * Template Name: Market Insights (FIXED)
+ * Template Name: Market Insights (Updated)
  * 
  * @package VortexEco
  */
 
-get_header(); ?>
+get_header(); 
+
+// Get articles per row setting from customizer
+$insights_per_row = get_theme_mod('insights_per_row', '3');
+$min_width = $insights_per_row == '4' ? '280px' : ($insights_per_row == '2' ? '450px' : '320px');
+?>
 
 <!-- Market Insights Page Header -->
-<section class="page-header" style="
-    padding: 6rem 0 2rem;
-    background: linear-gradient(135deg, #1263A0 0%, #0F5287 100%);
-    color: white;
-    position: relative;
-    overflow: hidden;
-    margin-top: 80px;
-">
-    <div style="
-        position: absolute;
-        top: 0;
-        left: 20;
-        right: 20;
-        bottom: 0;
-        background: 
-            radial-gradient(circle at 25% 75%, rgba(0, 168, 230, 0.3) 0%, transparent 50%),
-            radial-gradient(circle at 75% 25%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
-        opacity: 0.6;
-    "></div>
+<section class="page-header" style="padding: 6rem 0 2rem; background: linear-gradient(135deg, #1263A0 0%, #0F5287 100%); color: white; position: relative; overflow: hidden; margin-top: 80px;">
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 25% 75%, rgba(0, 168, 230, 0.3) 0%, transparent 50%), radial-gradient(circle at 75% 25%, rgba(255, 255, 255, 0.1) 0%, transparent 50%); opacity: 0.6;"></div>
     
     <div class="container" style="position: relative; z-index: 2;">
         <div style="text-align: center; max-width: 800px; margin: 0 auto;">
-            <h1 style="
-                font-size: clamp(2.5rem, 4vw, 3.5rem);
-                font-weight: 800;
-                margin-bottom: 1rem;
-                line-height: 1.2;
-            ">Market Insights</h1>
+            <h1 style="font-size: clamp(2.5rem, 4vw, 3.5rem); font-weight: 800; margin-bottom: 1rem; line-height: 1.2;">Market Insights</h1>
             
-            <p style="
-                font-size: 1.2rem;
-                color: rgba(255, 255, 255, 0.9);
-                margin-bottom: 3rem;
-                line-height: 1.6;
-            ">Latest wind energy industry updates and market trend analysis</p>
+            <p style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.9); margin-bottom: 3rem; line-height: 1.6;">Latest wind energy industry updates and market trend analysis</p>
             
             <!-- Search and Filter Bar -->
-            <div style="
-                background: rgba(255, 255, 255, 0.1);
-                backdrop-filter: blur(20px);
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                border-radius: 60px;
-                padding: 1rem 2rem;
-                display: flex;
-                align-items: center;
-                gap: 1rem;
-                max-width: 500px;
-                margin: 0 auto;
-            ">
+            <div style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 60px; padding: 1rem 2rem; display: flex; align-items: center; gap: 1rem; max-width: 500px; margin: 0 auto;">
                 <svg style="width: 20px; height: 20px; color: rgba(255,255,255,0.7);" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"></path>
                 </svg>
-                <input type="text" id="insightsSearch" placeholder="Search articles..." style="
-                    background: none;
-                    border: none;
-                    color: white;
-                    font-size: 1rem;
-                    flex: 1;
-                    outline: none;
-                " />
+                <input type="text" id="insightsSearch" placeholder="Search articles..." style="background: none; border: none; color: white; font-size: 1rem; flex: 1; outline: none;" />
             </div>
         </div>
     </div>
 </section>
 
 <!-- Main Content -->
-<section style="
-    padding: 4rem 0;
-    background: #F8FAFB;
-    min-height: 80vh;
-    margin-left: 10rem;
-    margin-right: 10rem;
-">
+<section style="padding: 4rem 0; background: #F8FAFB; min-height: 80vh; margin-left: 10rem; margin-right: 10rem;">
     <div class="container" style="max-width: 1400px; margin: 0 auto; padding: 0 2rem;">
         <?php
             // Get all articles
@@ -106,9 +60,18 @@ get_header(); ?>
         ?>
         
         <!-- Featured Article -->
-        <?php if ($featured_article): ?>
+        <?php if ($featured_article): 
+            // Get featured article image
+            $featured_image = get_post_meta($featured_article['id'], '_insight_image', true);
+            if (!$featured_image) {
+                $featured_image = get_the_post_thumbnail_url($featured_article['id'], 'large');
+            }
+            if (!$featured_image) {
+                $featured_image = get_template_directory_uri() . '/assets/images/slider-1.jpg';
+            }
+        ?>
             <div class="featured-article" data-article-id="<?php echo $featured_article['id']; ?>" style="background: #FFFFFF; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 3rem; border: 1px solid #E5E7EB; cursor: pointer;">
-                <div style="height: 300px; background: linear-gradient(135deg, rgba(18, 99, 160, 0.8), rgba(0, 168, 230, 0.8)); background-size: cover; background-position: center; position: relative; display: flex; align-items: end;">
+                <div style="height: 300px; background: url('<?php echo esc_url($featured_image); ?>') center/cover; position: relative; display: flex; align-items: end;">
                     
                     <div style="position: absolute; top: 1rem; left: 1rem; background: rgba(255, 255, 255, 0.9); color: #1263A0; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">Featured Article</div>
                     
@@ -134,93 +97,32 @@ get_header(); ?>
         <?php endif; ?>
         
         <!-- Filter Categories -->
-        <div style="
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 3rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        ">
-            <button class="category-filter active" data-category="all" style="
-                background: linear-gradient(135deg, #1263A0, #00A8E6);
-                color: white;
-                border: none;
-                padding: 0.75rem 1.5rem;
-                border-radius: 25px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                font-size: 0.9rem;
-            ">All Articles</button>
+        <div style="display: flex; gap: 1rem; margin-bottom: 3rem; flex-wrap: wrap; justify-content: center;">
+            <button class="category-filter active" data-category="all" style="background: linear-gradient(135deg, #1263A0, #00A8E6); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; font-size: 0.9rem;">All Articles</button>
             
-            <button class="category-filter" data-category="market-analysis" style="
-                background: #F3F4F6;
-                color: #4B5563;
-                border: none;
-                padding: 0.75rem 1.5rem;
-                border-radius: 25px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                font-size: 0.9rem;
-            ">Market Analysis</button>
+            <button class="category-filter" data-category="market-analysis" style="background: #F3F4F6; color: #4B5563; border: none; padding: 0.75rem 1.5rem; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; font-size: 0.9rem;">Market Analysis</button>
             
-            <button class="category-filter" data-category="technology" style="
-                background: #F3F4F6;
-                color: #4B5563;
-                border: none;
-                padding: 0.75rem 1.5rem;
-                border-radius: 25px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                font-size: 0.9rem;
-            ">Technology Innovation</button>
+            <button class="category-filter" data-category="technology" style="background: #F3F4F6; color: #4B5563; border: none; padding: 0.75rem 1.5rem; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; font-size: 0.9rem;">Technology Innovation</button>
             
-            <button class="category-filter" data-category="policy" style="
-                background: #F3F4F6;
-                color: #4B5563;
-                border: none;
-                padding: 0.75rem 1.5rem;
-                border-radius: 25px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                font-size: 0.9rem;
-            ">Policy & Regulations</button>
+            <button class="category-filter" data-category="policy" style="background: #F3F4F6; color: #4B5563; border: none; padding: 0.75rem 1.5rem; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; font-size: 0.9rem;">Policy & Regulations</button>
             
-            <button class="category-filter" data-category="industry-news" style="
-                background: #F3F4F6;
-                color: #4B5563;
-                border: none;
-                padding: 0.75rem 1.5rem;
-                border-radius: 25px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                font-size: 0.9rem;
-            ">Industry News</button>
+            <button class="category-filter" data-category="industry-news" style="background: #F3F4F6; color: #4B5563; border: none; padding: 0.75rem 1.5rem; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; font-size: 0.9rem;">Industry News</button>
         </div>
         
         <!-- Articles Grid -->
-        <div class="articles-grid" style="
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 320px));
-            gap: 2rem;
-            margin-bottom: 3rem;
-            justify-content: center;
-        ">
+        <div class="articles-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(<?php echo $min_width; ?>, 1fr)); gap: 2rem; margin-bottom: 3rem; justify-content: center;">
             <?php 
-            $category_colors = array(
-                'market-analysis' => array('bg' => 'linear-gradient(135deg, rgba(5, 150, 105, 0.8), rgba(16, 185, 129, 0.8))', 'badge' => 'rgba(5, 150, 105, 0.9)'),
-                'technology' => array('bg' => 'linear-gradient(135deg, rgba(124, 58, 237, 0.8), rgba(168, 85, 247, 0.8))', 'badge' => 'rgba(124, 58, 237, 0.9)'),
-                'policy' => array('bg' => 'linear-gradient(135deg, rgba(220, 38, 38, 0.8), rgba(239, 68, 68, 0.8))', 'badge' => 'rgba(220, 38, 38, 0.9)'),
-                'industry-news' => array('bg' => 'linear-gradient(135deg, rgba(245, 158, 11, 0.8), rgba(251, 191, 36, 0.8))', 'badge' => 'rgba(245, 158, 11, 0.9)'),
-            );
-            
             foreach ($regular_articles as $article): 
                 $category = !empty($article['categories']) ? $article['categories'][0] : 'industry-news';
-                $color = isset($category_colors[$category]) ? $category_colors[$category] : $category_colors['industry-news'];
+                
+                // Get article image
+                $article_image = get_post_meta($article['id'], '_insight_image', true);
+                if (!$article_image) {
+                    $article_image = get_the_post_thumbnail_url($article['id'], 'medium');
+                }
+                if (!$article_image) {
+                    $article_image = get_template_directory_uri() . '/assets/images/slider-1.jpg';
+                }
             ?>
             
             <article class="article-card" 
@@ -228,11 +130,12 @@ get_header(); ?>
                 data-article-id="<?php echo $article['id']; ?>" 
                 style="background: #FFFFFF; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05); transition: all 0.4s ease; border: 1px solid #E5E7EB; cursor: pointer;">
                 
-                <div style="height: 200px; background: <?php echo $color['bg']; ?>; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; font-weight: 700; position: relative;">
-                    <?php echo substr($article['title'], 0, 10); ?>
-                    <div style="position: absolute; top: 1rem; left: 1rem; background: <?php echo $color['badge']; ?>; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">
+                <div style="height: 200px; background: url('<?php echo esc_url($article_image); ?>') center/cover; position: relative;">
+                    <?php if (!empty($article['category_names'])): ?>
+                    <div style="position: absolute; top: 1rem; left: 1rem; background: rgba(18, 99, 160, 0.9); color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">
                         <?php echo implode(', ', $article['category_names']); ?>
                     </div>
+                    <?php endif; ?>
                 </div>
                 
                 <div style="padding: 1.5rem;">
@@ -257,40 +160,15 @@ get_header(); ?>
 </section>
 
 <!-- Newsletter Subscription -->
-<section style="
-    padding: 4rem 0;
-    background: linear-gradient(135deg, #1263A0, #00A8E6);
-    color: white;
-">
+<section style="padding: 4rem 0; background: linear-gradient(135deg, #1263A0, #00A8E6); color: white;">
     <div class="container" style="max-width: 800px; margin: 0 auto; padding: 0 2rem; text-align: center;">
-        <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 1rem;">
-            Subscribe to Market Insights
-        </h2>
+        <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 1rem;">Subscribe to Market Insights</h2>
         
-        <p style="font-size: 1.1rem; color: rgba(255, 255, 255, 0.9); margin-bottom: 2rem; line-height: 1.6;">
-            Get the latest wind energy industry updates and professional analysis first
-        </p>
+        <p style="font-size: 1.1rem; color: rgba(255, 255, 255, 0.9); margin-bottom: 2rem; line-height: 1.6;">Get the latest wind energy industry updates and professional analysis first</p>
         
         <form style="display: flex; gap: 1rem; max-width: 400px; margin: 0 auto;">
-            <input type="email" placeholder="Enter your email address" style="
-                flex: 1;
-                padding: 1rem;
-                border: none;
-                border-radius: 8px;
-                font-size: 1rem;
-                outline: none;
-            " />
-            <button type="submit" style="
-                background: rgba(255, 255, 255, 0.2);
-                color: white;
-                border: 1px solid rgba(255, 255, 255, 0.3);
-                padding: 1rem 2rem;
-                border-radius: 8px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                white-space: nowrap;
-            ">Subscribe</button>
+            <input type="email" placeholder="Enter your email address" style="flex: 1; padding: 1rem; border: none; border-radius: 8px; font-size: 1rem; outline: none;" />
+            <button type="submit" style="background: rgba(255, 255, 255, 0.2); color: white; border: 1px solid rgba(255, 255, 255, 0.3); padding: 1rem 2rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; white-space: nowrap;">Subscribe</button>
         </form>
     </div>
 </section>
@@ -376,7 +254,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // FIXED: Article click handling - Navigate to article detail
+    // Article click handling
     articleCards.forEach(card => {
         card.addEventListener('click', function() {
             const articleId = this.getAttribute('data-article-id');

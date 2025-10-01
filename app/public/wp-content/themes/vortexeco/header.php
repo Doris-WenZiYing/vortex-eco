@@ -176,7 +176,7 @@
                 display: flex;
                 align-items: center;
             ">
-                <form class="header-search-form" style="
+                <form class="header-search-form" method="get" action="<?php echo home_url('/products/'); ?>" style="
                     display: flex;
                     align-items: center;
                     background: #F9FAFB;
@@ -189,7 +189,7 @@
                     <svg style="width: 18px; height: 18px; color: #9CA3AF; margin-right: 0.5rem;" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"></path>
                     </svg>
-                    <input type="search" name="search_query" placeholder="<?php _e('Search products & services...', 'vortex-eco'); ?>" style="
+                    <input type="search" name="s" placeholder="<?php _e('Search products & services...', 'vortex-eco'); ?>" style="
                         border: none;
                         background: none;
                         outline: none;
@@ -257,7 +257,7 @@
                 </a>
             </li>
             <li style="border-bottom: 1px solid #F3F4F6;">
-                <a href="<?php echo home_url('/products-services/'); ?>" style="
+                <a href="<?php echo home_url('/products/'); ?>" style="
                     display: block;
                     padding: 1rem 0;
                     color: #4B5563;
@@ -265,11 +265,23 @@
                     font-weight: 500;
                     transition: color 0.3s ease;
                 ">
-                    <?php _e('Products & Services', 'vortex-eco'); ?>
+                    <?php _e('Products', 'vortex-eco'); ?>
                 </a>
             </li>
             <li style="border-bottom: 1px solid #F3F4F6;">
-                <a href="<?php echo get_permalink(get_option('page_for_posts')); ?>" style="
+                <a href="<?php echo home_url('/services/'); ?>" style="
+                    display: block;
+                    padding: 1rem 0;
+                    color: #4B5563;
+                    text-decoration: none;
+                    font-weight: 500;
+                    transition: color 0.3s ease;
+                ">
+                    <?php _e('Services', 'vortex-eco'); ?>
+                </a>
+            </li>
+            <li style="border-bottom: 1px solid #F3F4F6;">
+                <a href="<?php echo home_url('/market-insights/'); ?>" style="
                     display: block;
                     padding: 1rem 0;
                     color: #4B5563;
@@ -281,7 +293,7 @@
                 </a>
             </li>
             <li>
-                <a href="#contact" style="
+                <a href="<?php echo home_url('/contact-us/'); ?>" style="
                     display: block;
                     padding: 1rem 0;
                     color: #4B5563;
@@ -296,11 +308,11 @@
         
         <!-- Mobile Search -->
         <div style="padding: 1rem; border-top: 1px solid #F3F4F6;">
-            <form class="mobile-search-form" style="
+            <form class="mobile-search-form" method="get" action="<?php echo home_url('/products/'); ?>" style="
                 display: flex;
                 gap: 0.5rem;
             ">
-                <input type="search" name="search_query" placeholder="<?php _e('Search products & services...', 'vortex-eco'); ?>" style="
+                <input type="search" name="s" placeholder="<?php _e('Search products & services...', 'vortex-eco'); ?>" style="
                     flex: 1;
                     padding: 0.75rem;
                     border: 1px solid #D1D5DB;
@@ -329,7 +341,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const header = document.querySelector('.site-header');
     const menuToggle = document.querySelector('.menu-toggle');
     const mobileNav = document.querySelector('.mobile-navigation');
-    const searchForms = document.querySelectorAll('form[action*="products-services"]');
     
     // Header scroll effect
     window.addEventListener('scroll', function() {
@@ -368,8 +379,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Search form enhancements
+    const searchForms = document.querySelectorAll('.header-search-form, .mobile-search-form');
     searchForms.forEach(form => {
-        const searchInput = form.querySelector('input[name="s"]');
         const searchButton = form.querySelector('button[type="submit"]');
         
         form.addEventListener('focusin', function() {
@@ -393,16 +404,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.style.transform = 'translateY(0)';
             });
         }
-        
-        // Add search feedback on submit
-        form.addEventListener('submit', function() {
-            if (searchInput && searchInput.value.trim()) {
-                if (searchButton) {
-                    searchButton.style.background = '#0F5287';
-                    searchButton.textContent = '搜尋中...';
-                }
-            }
-        });
     });
     
     // Smooth scrolling for anchor links

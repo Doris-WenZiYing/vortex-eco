@@ -8,7 +8,17 @@
 get_header(); 
 
 // Get product ID from URL - FIXED VERSION
-$product_id = isset($_GET['product']) ? intval($_GET['product']) : get_query_var('product', 0);
+$product_id = isset($_GET['product']) ? intval($_GET['product']) : 0;
+
+// If no product ID in URL, try to get from query var
+if (!$product_id) {
+    $product_id = get_query_var('product', 0);
+}
+
+// If still no product ID, check if this is a single product post
+if (!$product_id && is_singular('vortex_products')) {
+    $product_id = get_the_ID();
+}
 
 if (!$product_id) {
     echo '<div style="padding: 4rem 2rem; text-align: center; margin-top: 80px;">';
@@ -23,7 +33,7 @@ if (!$product_id) {
 // Get product from database
 $product = get_post($product_id);
 
-if (!$product || $product->post_type !== 'vortex_products') {
+if (!$product || $product->post_type !== 'vortex_products' || $product->post_status !== 'publish') {
     echo '<div style="padding: 4rem 2rem; text-align: center; margin-top: 80px;">';
     echo '<h1>Product Not Found</h1>';
     echo '<p>Sorry, the product you are looking for does not exist.</p>';
@@ -32,22 +42,6 @@ if (!$product || $product->post_type !== 'vortex_products') {
     get_footer();
     exit;
 }
-
-// Get product data
-$categories = get_the_terms($product->ID, 'product_category');
-$brands = get_the_terms($product->ID, 'product_brand');
-$features = get_post_meta($product->ID, '_product_features', true);
-$price = get_post_meta($product->ID, '_product_price', true);
-$icon = get_post_meta($product->ID, '_product_icon', true);
-$primary_color = get_post_meta($product->ID, '_product_color_primary', true) ?: '#1263A0';
-$secondary_color = get_post_meta($product->ID, '_product_color_secondary', true) ?: '#00A8E6';
-$warranty = get_post_meta($product->ID, '_product_warranty', true) ?: '24 months';
-$delivery_time = get_post_meta($product->ID, '_product_delivery_time', true) ?: '2-4 weeks';
-$certification = get_post_meta($product->ID, '_product_certification', true) ?: 'CE/ISO';
-
-$brand_name = !empty($brands) ? $brands[0]->name : 'VortexEco';
-$category_name = !empty($categories) ? $categories[0]->name : 'Products';
-$features_array = $features ? array_filter(explode("\n", $features)) : array();
 ?>
 
 <!-- Product Header -->
