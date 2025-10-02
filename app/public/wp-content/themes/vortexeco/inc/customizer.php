@@ -134,19 +134,33 @@ function vortexeco_customize_register($wp_customize) {
     // SERVICES PAGE SLIDER
     // ========================================
     $wp_customize->add_section('services_slider', array(
-        'title'    => __('服務頁 Slider', 'vortex-eco'),
+        'title'    => __('服務頁圖片', 'vortex-eco'),
         'priority' => 32,
     ));
-    
+
+    // Hero 背景圖（沒有默認值）
+    $wp_customize->add_setting('services_hero_image', array(
+        'default'           => '', // 空的，沒有默認值
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'services_hero_image', array(
+        'label'    => __('服務頁 Hero 背景圖片', 'vortex-eco'),
+        'section'  => 'services_slider',
+        'priority' => 1,
+    )));
+
+    // Slider 圖片 1-3（沒有默認值）
     for ($i = 1; $i <= 3; $i++) {
         $wp_customize->add_setting("services_slider_image_$i", array(
-            'default'           => '',
+            'default'           => '', // 空的，沒有默認值
             'sanitize_callback' => 'esc_url_raw'
         ));
         
         $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, "services_slider_image_$i", array(
-            'label'   => "Slider 圖片 $i",
-            'section' => 'services_slider',
+            'label'    => "Slider 圖片 $i",
+            'section'  => 'services_slider',
+            'priority' => $i + 1,
         )));
     }
     

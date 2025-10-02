@@ -17,7 +17,7 @@ $services_query = new WP_Query(array(
 ));
 
 // Get hero image from customizer
-$hero_image = get_theme_mod('services_hero_image', get_template_directory_uri() . '/assets/images/LINE_ALBUM_2025.8.27_250827_8.jpg');
+$hero_image = get_theme_mod('services_hero_image', '');
 ?>
 
 <!-- Hero Section -->
